@@ -1,3 +1,11 @@
+# build files
+out/
+
+# vs files
+.vs/
+
+
+
 # Prerequisites
 *.d
 
