@@ -21,9 +21,9 @@
 int main() {
 	spdlog::set_level(spdlog::level::debug);
 
-
 	App app;
 
-	app.start();
 
+
+	app.start();
 }

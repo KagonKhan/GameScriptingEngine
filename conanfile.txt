@@ -4,6 +4,7 @@ fmt/11.0.2
 gtest/1.15.0
 glm/cci.20230113
 spdlog/1.15.0
+magic_enum/0.9.7
 
 [generators]
 CMakeDeps

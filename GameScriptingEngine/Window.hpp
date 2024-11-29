@@ -1,4 +1,4 @@
-
+#pragma once
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imstb_textedit.h>
@@ -9,8 +9,12 @@
 #include <ImGui/imgui_impl_opengl3.h>
 #include <exception>
 
+#include <spdlog/spdlog.h>
 
-static void glfw_error_callback(int error, const char* description) { fprintf(stderr, "GLFW Error %d: %s\n", error, description); }
+
+static void glfw_error_callback(int error, const char* description) { 
+	spdlog::error("GLFW Error {}: {}\n", error, description);
+}
 
 class Window {
 public:
@@ -68,10 +72,12 @@ private:
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+		//glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 		
-		if (window = glfwCreateWindow(800, 600, "hello world", nullptr, nullptr); window == nullptr)
+		if (window = glfwCreateWindow(1, 1, "hello world", nullptr, nullptr); window == nullptr)
 			throw std::runtime_error("Could not create the window");
 
+		
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
 	}
@@ -87,8 +93,8 @@ private:
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;     // Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // Enable Multi-Viewport
 		// / Platform Windows
-		// io.ConfigViewportsNoAutoMerge = true;
-		// io.ConfigViewportsNoTaskBarIcon = true;
+		 //io.ConfigViewportsNoAutoMerge = true;
+		 //io.ConfigViewportsNoTaskBarIcon = true;
 
 		ImGui::StyleColorsDark();
 
