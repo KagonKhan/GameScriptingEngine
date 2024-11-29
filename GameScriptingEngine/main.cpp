@@ -1,5 +1,5 @@
 #include <print>
-
+#include "App.hpp"
 
 
 
@@ -19,6 +19,11 @@
 
 
 int main() {
+	spdlog::set_level(spdlog::level::debug);
 
-	std::print("Hello GSE");
+
+	App app;
+
+	app.start();
+
 }

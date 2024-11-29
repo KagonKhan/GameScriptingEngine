@@ -37,11 +37,13 @@ endif()
 
 project ("GameScriptingEngine")
 
-# Include sub-projects.
-add_subdirectory ("GameScriptingEngine")
-
-
-
 install_conan()
 find_package(FMT REQUIRED)
 find_package(glm REQUIRED)
+find_package(spdlog REQUIRED)
+
+# Include sub-projects.
+add_subdirectory(external/src/ImGui)
+add_subdirectory ("GameScriptingEngine")
+
+
