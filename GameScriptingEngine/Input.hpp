@@ -22,14 +22,13 @@ public:
             exit(1);
         }
         keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInstance, 0);
-        mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, hInstance, 0);
+        //mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, hInstance, 0);
 
-        if (!keyboardHook || !mouseHook) {
+        if (!keyboardHook) {
             spdlog::critical("Failed to set hooks");
             exit(1);
         }
 
-        run = true;
 
             //MSG msg;
             //spdlog::debug("before loop");
@@ -51,11 +50,7 @@ public:
 
     ~WinApiInputParser() {
         spdlog::info("WinApiInputParser destructor...");
-        run = false;
         PostQuitMessage(0);
-        spdlog::info("joining poller");
-        poller.join();
-        spdlog::info("poller joined");
 
         UnhookWindowsHookEx(keyboardHook);
         UnhookWindowsHookEx(mouseHook);
@@ -63,27 +58,25 @@ public:
         spdlog::info("WinApiInputParser destructor");
     }
 
+    void subscribeKeyPress(std::function<void(int keyCode, int action)> subscriber) {
+        keyboardSubscriber = std::move(subscriber);
+    }
+
 private:
     HHOOK keyboardHook;
     HHOOK mouseHook;
-    bool run{ false };
-    std::thread poller;
+    inline static std::function<void(int keyCode, int action)> keyboardSubscriber;
 
     static LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
         if (nCode == HC_ACTION) {
-            auto* keyboardData = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
-            switch (wParam) {
-            case WM_KEYDOWN:
-                spdlog::warn("Key pressed: {}", (char)keyboardData->vkCode);
-                break;
-            case WM_KEYUP:
-                spdlog::warn("Key released: {}", (char)keyboardData->vkCode);
-                break;
-            }
+            auto keyboardData = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
+            
+            // TODO: maybe skip callbacks for key held - repeats?
+            keyboardSubscriber(static_cast<int>(keyboardData->vkCode), wParam);
         }
         return CallNextHookEx(NULL, nCode, wParam, lParam);
     }
-    static LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
+    /*static LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
         if (nCode == HC_ACTION) {
             auto* mouseData = reinterpret_cast<MSLLHOOKSTRUCT*>(lParam);
             switch (wParam) {
@@ -100,7 +93,7 @@ private:
             }
         }
         return CallNextHookEx(NULL, nCode, wParam, lParam);
-    }
+    }*/
 
 };
 
@@ -109,7 +102,7 @@ class Input {
 public:
 
 
-    class Mouse {
+    inline static class Mouse {
     public:
         enum class Button : short int {
             LEFT = VK_LBUTTON,
@@ -128,12 +121,33 @@ public:
             return GetAsyncKeyState(magic_enum::enum_integer(button)) & 0x8000;
         }
 
-        
-    };
+        static bool Click() {
+            INPUT inputs[2] = {};
+            inputs[0].type = INPUT_MOUSE;
+            inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+            inputs[1].type = INPUT_MOUSE;
+            inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
 
 
-    class Keyboard {
+            UINT uSent = SendInput(2, inputs, sizeof(INPUT));
+
+            if (uSent != 2) {
+                spdlog::critical("Failed to click the mouse!");
+            }
+
+            return uSent != 2;
+        }
+        static bool Click(ImVec2 mousePosition) {
+            return false;
+        }
+    } mouse;
+
+
+    inline static class Keyboard {
     public:
+        Keyboard() {
+            parser.subscribeKeyPress(parseCallback);
+        }
         enum class Key : short int {
             W = 'W',
             A = 'A',
@@ -141,25 +155,56 @@ public:
             D = 'D',
             E = 'E',
             Q = 'Q',
+            
+            // Special Keys
+            F1 = 0x70,
+            F2 = 0x71,
+            F3 = 0x72,
+            F4 = 0x73,
+            F5 = 0x74,
+            F6 = 0x75,
+            F7 = 0x76,
+            F8 = 0x77,
+            F9 = 0x78,
         };
 
-        inline static std::unordered_map <Key, std::function<void()>> keybinds;
-
-        static void parseCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-            spdlog::info("Callback called");
-            Key pressed_button = static_cast<Key>(key);
-
-            if (keybinds.contains(pressed_button) && action == GLFW_PRESS) {
-                std::invoke(keybinds[pressed_button]);
+        static std::string keyName(Key pressedButton) {
+            if (specialVKtoName.contains(pressedButton)) {
+                return specialVKtoName.at(pressedButton);
+            }
+            else {
+                return { static_cast<char>(pressedButton) };
             }
 
         }
 
+        inline static std::unordered_map <Key, std::function<void()>> keybinds;
 
     private:
         inline static WinApiInputParser parser;
 
-    };
+        inline static const std::unordered_map<Key, std::string> specialVKtoName{
+            {Key::F1, "F1"}, {Key::F2, "F2"}, {Key::F3, "F3"}, {Key::F4, "F4"},
+            {Key::F5, "F5"}, {Key::F6, "F6"}, {Key::F7, "F7"}, {Key::F8, "F8"},
+            {Key::F9, "F9"},
+        };
+
+
+        static void parseCallback(int keyCode, int action) {
+            const Key pressed_button = static_cast<Key>(keyCode);
+
+            const std::string button_name = keyName(pressed_button);
+            
+
+            spdlog::debug("Received key: {}", button_name);
+            if (keybinds.contains(pressed_button) && action == WM_KEYUP) {
+                spdlog::info("Callback for button {} called", button_name);
+                std::invoke(keybinds[pressed_button]);
+            }
+        }
+    } keyboard;
+
+
 
 private:
 };

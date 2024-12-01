@@ -37,7 +37,9 @@ endif()
 
 project ("GameScriptingEngine")
 
-install_conan()
+
+
+
 find_package(FMT REQUIRED)
 find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
