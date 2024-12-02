@@ -1,0 +1,58 @@
+
+---
+Language: Cpp
+
+# GENERAL
+IncludeBlocks: Regroup
+SortIncludes: 'true'
+ColumnLimit: '120'
+ContinuationIndentWidth: '4'
+IndentWidth: '4'
+UseTab: Never
+MaxEmptyLinesToKeep: '2'
+AccessModifierOffset: -4
+
+
+# ALIGNMENT 
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: 'true'
+AlignConsecutiveDeclarations: 'true'
+AlignEscapedNewlines: Left
+AlignOperands: 'true'
+AlignTrailingComments: 'true'
+PointerAlignment: Left
+
+
+# SPACING
+SpaceAfterCStyleCast: 'true'
+SpaceBeforeAssignmentOperators: 'true'
+SpaceInEmptyParentheses: 'false'
+SpacesInCStyleCastParentheses: 'false'
+SpacesInParentheses: 'false'
+SpacesInSquareBrackets: 'false'
+
+
+AllowAllParametersOfDeclarationOnNextLine: 'false'
+AllowShortBlocksOnASingleLine: 'true'
+AllowShortCaseLabelsOnASingleLine: 'true'
+AllowShortFunctionsOnASingleLine: 'true'
+AllowShortIfStatementsOnASingleLine: 'false'
+AllowShortLoopsOnASingleLine: 'false'
+AlwaysBreakBeforeMultilineStrings: 'false'
+
+BinPackArguments: 'true'
+BinPackParameters: 'true'
+
+
+
+
+IndentAccessModifiers: false
+
+BreakBeforeTernaryOperators: 'true'
+BreakStringLiterals: 'true'
+DerivePointerAlignment: 'false'
+IndentCaseLabels: 'false'
+IndentWrappedFunctionNames: 'false'
+KeepEmptyLinesAtTheStartOfBlocks: 'false'
+
+ReflowComments: 'true'

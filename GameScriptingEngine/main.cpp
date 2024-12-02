@@ -1,5 +1,5 @@
-#include <print>
 #include "App.hpp"
+#include <spdlog/spdlog.h>
 
 
 
@@ -16,10 +16,13 @@
 
 */
 
+void initialize() { 
+    spdlog::set_level(spdlog::level::debug);
 
+}
 
 int main() {
-	spdlog::set_level(spdlog::level::debug);
+    initialize();
 
 	App app;
 

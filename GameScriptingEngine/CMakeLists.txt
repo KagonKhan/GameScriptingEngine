@@ -5,7 +5,26 @@
 
 
 # Add source to this project's executable.
-add_executable (GameScriptingEngine "main.cpp" "Window.hpp" "App.hpp" "AutoClicker.hpp" "Input.hpp")
+add_executable (GameScriptingEngine
+    "main.cpp" 
+
+    "include/Utils.hpp"
+
+    "src/AutoClicker.cpp" 
+    "src/Window.cpp" 
+    "src/App.cpp" 
+
+    "src/input/InputListener.cpp" 
+    "src/input/Keyboard.cpp"
+    "src/input/Mouse.cpp"
+    "src/input/Input.cpp"
+
+)
+
+target_include_directories(GameScriptingEngine
+    PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
+
+)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET GameScriptingEngine PROPERTY CXX_STANDARD 23)
