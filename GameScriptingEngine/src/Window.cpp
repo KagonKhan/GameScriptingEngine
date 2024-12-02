@@ -45,7 +45,6 @@ void Window::endFrame() {
     glfwGetFramebufferSize(window, &display_w, &display_h);
     glViewport(0, 0, display_w, display_h);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     ImGuiIO& io = ImGui::GetIO();
@@ -60,17 +59,35 @@ void Window::endFrame() {
 }
 
 void Window::setupGLFWWindow() {
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-    // glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    //glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 
-    if (window = glfwCreateWindow(1, 1, "hello world", nullptr, nullptr); window == nullptr)
+    glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    //glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+
+    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+
+    glfwWindowHint(GLFW_FOCUSED, GLFW_FALSE);
+    glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_FALSE);
+    glfwWindowHint(GLFW_MOUSE_PASSTHROUGH, GLFW_TRUE);
+
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
+
+    const auto video_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    if (window = glfwCreateWindow(/*video_mode->width-*/1, /*video_mode->height-*/1, "hello world", nullptr, nullptr);
+        window == nullptr)
         throw std::runtime_error("Could not create the window");
 
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
+
+
 }
 
 void Window::setupImGui() {

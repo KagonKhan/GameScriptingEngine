@@ -3,19 +3,19 @@
 
 class Window {
 public:
-	Window();
-	~Window();
+    Window();
+    ~Window();
 
-	operator GLFWwindow* () const { return window; }
+    operator GLFWwindow*() const { return window; }
 
-	void startFrame();
-	void endFrame();
-
-private:
-	void setupGLFWWindow();
-	void setupImGui();
+    void startFrame();
+    void endFrame();
 
 private:
-	GLFWwindow* window{ nullptr };
-	const char* glsl_version = "#version 150";
+    void setupGLFWWindow();
+    void setupImGui();
+
+private:
+    GLFWwindow* window{nullptr};
+    const char* glsl_version = "#version 150";
 };

@@ -18,3 +18,6 @@
 - PERSISTENT MACROS
 - PERSISTENT AI RESULTS
 - Sound localizator (mostly for shooters)
+- abstracted backend/ windows winapi etc
+https://www.youtube.com/watch?v=BIZyxja3Qls
+- imgui d3d https://www.youtube.com/watch?v=NcClcNlsfdw

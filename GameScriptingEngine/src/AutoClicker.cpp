@@ -36,7 +36,7 @@ void AutoClicker::keybindWidget() {
 
     const std::string current_preview = Input::Keyboard::KeyName(keybind);
     if (ImGui::BeginCombo("Keybind", current_preview.c_str(), ImGuiComboFlags_WidthFitPreview)) {
-        for (const auto& key : magic_enum::enum_entries<Input::Keyboard::Key>() | std::views::keys) {
+        for (const auto& key : magic_enum::enum_entries<Input::Keyboard::KEY>() | std::views::keys) {
             const bool is_selected = key == keybind;
             if (ImGui::Selectable(Input::Keyboard::KeyName(key).c_str(), is_selected)) {
                 Input::Keyboard::RemoveKeybind(keybind);

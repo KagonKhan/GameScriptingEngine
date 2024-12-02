@@ -15,4 +15,6 @@ private:
 
     Window      window;
     AutoClicker clicker;
+
+    bool enableOverlay{false};
 };

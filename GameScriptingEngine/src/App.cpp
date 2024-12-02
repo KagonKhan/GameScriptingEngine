@@ -35,7 +35,10 @@ void App::start() {
 }
 
 void App::render() {
+    /*ImGui::GetMainViewport()->Flags |= ImGuiViewportFlags_NoInputs;
+    ImGui::GetWindowViewport()->Flags &= ~(ImGuiWindowFlags_NoInputs);*/
     static bool demo = false;
+
     if (ImGui::Begin("GameScriptingEngine", &isRunning)) {
         fix_monitor_dpi_differences();
 
@@ -45,9 +48,13 @@ void App::render() {
             clicker.render();
         }
 
+        // TODO: a way to achieve overlay is to change  mouse click through on a keybind, or maybe while holding ctrl?
+        // This would allow me to draw on the screen easily.
+
         ImGui::Checkbox("Demo", &demo);
         if (demo)
             ImGui::ShowDemoWindow();
+
 
     } else {
         spdlog::critical("Cannot write to main window!");
