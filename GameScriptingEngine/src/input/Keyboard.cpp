@@ -10,22 +10,22 @@
 using namespace Input;
 
 namespace {
-inline static const std::unordered_map<Keyboard::Key, std::string> specialVKtoName{
-    {Keyboard::Key::F1, "F1"}, {Keyboard::Key::F2, "F2"}, {Keyboard::Key::F3, "F3"},
-    {Keyboard::Key::F4, "F4"}, {Keyboard::Key::F5, "F5"}, {Keyboard::Key::F6, "F6"},
-    {Keyboard::Key::F7, "F7"}, {Keyboard::Key::F8, "F8"}, {Keyboard::Key::F9, "F9"},
+inline const std::unordered_map<Keyboard::KEY, std::string> SPECIAL_VK_TO_NAME{
+    {Keyboard::KEY::F1, "F1"}, {Keyboard::KEY::F2, "F2"}, {Keyboard::KEY::F3, "F3"},
+    {Keyboard::KEY::F4, "F4"}, {Keyboard::KEY::F5, "F5"}, {Keyboard::KEY::F6, "F6"},
+    {Keyboard::KEY::F7, "F7"}, {Keyboard::KEY::F8, "F8"}, {Keyboard::KEY::F9, "F9"},
 };
 } // namespace
 
-std::string Keyboard::KeyName(Key pressedButton) {
-    if (specialVKtoName.contains(pressedButton)) {
-        return specialVKtoName.at(pressedButton);
+std::string Keyboard::KeyName(KEY pressed_button) {
+    if (SPECIAL_VK_TO_NAME.contains(pressed_button)) {
+        return SPECIAL_VK_TO_NAME.at(pressed_button);
     } else {
-        return {static_cast<char>(pressedButton)};
+        return {static_cast<char>(pressed_button)};
     }
 }
 
-bool Keyboard::AddKeybind(Key key, std::function<void()>&& action) {
+bool Keyboard::AddKeybind(KEY key, std::function<void()>&& action) {
     if (keybinds.contains(key))
         return false;
 
@@ -33,7 +33,7 @@ bool Keyboard::AddKeybind(Key key, std::function<void()>&& action) {
     return true;
 }
 
-bool Keyboard::RemoveKeybind(Key key) {
+bool Keyboard::RemoveKeybind(const KEY key) {
     if (!keybinds.contains(key))
         return false;
 
@@ -41,8 +41,8 @@ bool Keyboard::RemoveKeybind(Key key) {
     return true;
 }
 
-void Keyboard::KeyPressedCallback(int keyCode, int action) {
-    const Key         pressed_button = static_cast<Key>(keyCode);
+void Keyboard::KeyPressedCallback(const int key_code, const int action) {
+    const auto        pressed_button = static_cast<KEY>(key_code);
     const std::string button_name    = KeyName(pressed_button);
 
     if (keybinds.contains(pressed_button) && action == WM_KEYUP) {

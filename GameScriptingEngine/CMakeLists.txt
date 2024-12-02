@@ -17,7 +17,6 @@ add_executable (GameScriptingEngine
     "src/input/InputListener.cpp" 
     "src/input/Keyboard.cpp"
     "src/input/Mouse.cpp"
-    "src/input/Input.cpp"
 
 )
 

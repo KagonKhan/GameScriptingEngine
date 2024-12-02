@@ -9,7 +9,7 @@
 namespace Input {
 class Keyboard {
 public:
-    enum class Key : short int {
+    enum class KEY : std::uint8_t {
         W = 'W',
         A = 'A', 
         S = 'S',
@@ -29,20 +29,20 @@ public:
         F9 = 0x78,
     };
 
-    static std::string KeyName(Key pressedButton);
-    static bool        AddKeybind(Key key, std::function<void()>&& action);
-    static bool        RemoveKeybind(Key key);
+    static std::string KeyName(KEY pressed_button);
+    static bool        AddKeybind(KEY key, std::function<void()>&& action);
+    static bool        RemoveKeybind(KEY key);
 
 private:
-    static void KeyPressedCallback(int keyCode, int action);
+    static void KeyPressedCallback(int key_code, int action);
 
 private:
-    inline static std::unordered_map<Key, std::function<void()>> keybinds{magic_enum::enum_count<Key>()};
+    inline static std::unordered_map<KEY, std::function<void()>> keybinds{magic_enum::enum_count<KEY>()};
 
-    // TODO: clunky af, what cleaner way can i auto-initialize this?
+    // TODO: clunky af, what cleaner way can I auto-initialize this?
     inline static bool subscribed = []{
-        static InputListener input_listener; 
-        input_listener.SubscribeKeyPress(KeyPressedCallback);
+        static InputListener input_listener;
+        InputListener::SubscribeKeyPress(KeyPressedCallback);
         return true;
     }();
 };

@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <chrono>
 
-static void clamped(int &value, int low, int high) { value = std::clamp(value, low, high); }
+static void clamped(int &value, const int low, const int high) { value = std::clamp(value, low, high); }
 
 // TODO: assert alignment works
 struct Interval {
@@ -12,7 +12,7 @@ struct Interval {
     int micro   = {0};
 
 
-    std::chrono::microseconds asMicroseconds() {
+    [[nodiscard]] std::chrono::microseconds asMicroseconds() const {
         return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::minutes{minutes}) +
                std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::seconds{seconds}) +
                std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::milliseconds{milli}) +

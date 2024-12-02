@@ -30,6 +30,6 @@ private:
 private:
     std::thread          clicker;
     std::atomic<bool>    isRunning;
-    Input::Keyboard::Key keybind{Input::Keyboard::Key::Q};
+    Input::Keyboard::KEY keybind{Input::Keyboard::KEY::Q};
     Interval             interval;
 };

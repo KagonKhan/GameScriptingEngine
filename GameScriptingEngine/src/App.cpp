@@ -6,14 +6,14 @@
 
 
 namespace {
-auto fixMonitorDpiDifferences = [windowDPI = 0.0f]() mutable {
+auto fix_monitor_dpi_differences = [windowDPI = 0.0f]() mutable {
     if (windowDPI == 0.0f) {
         windowDPI = ImGui::GetWindowDpiScale();
     }
 
-    if (float current_dpi = ImGui::GetWindowDpiScale(); current_dpi != windowDPI) {
+    if (const float current_dpi = ImGui::GetWindowDpiScale(); current_dpi != windowDPI) {
         spdlog::debug("DPI changed, resizing the window");
-        auto size = ImGui::GetWindowSize();
+        const ImVec2 size = ImGui::GetWindowSize();
         ImGui::SetWindowSize(size + ImVec2{1.f, 1.f});
         ImGui::SetWindowSize(size - ImVec2{1.f, 1.f});
         windowDPI = ImGui::GetWindowDpiScale();
@@ -37,7 +37,7 @@ void App::start() {
 void App::render() {
     static bool demo = false;
     if (ImGui::Begin("GameScriptingEngine", &isRunning)) {
-        fixMonitorDpiDifferences();
+        fix_monitor_dpi_differences();
 
         ImGui::Checkbox("AutoClicker", &clicker.isVisible);
 

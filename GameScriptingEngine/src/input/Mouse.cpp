@@ -30,10 +30,10 @@ INPUT RMB_CLICK[2] = {RMB_PRESS, RMB_RELEASE};
 ImVec2 Mouse::GetPosition() {
     POINT point;
     GetCursorPos(&point);
-    return {(float) point.x, (float) point.y};
+    return {static_cast<float>(point.x), static_cast<float>(point.y)};
 }
 
-bool Mouse::IsButtonPressed(Button button) { return GetAsyncKeyState(magic_enum::enum_integer(button)) & 0x8000; }
+bool Mouse::IsButtonPressed(const BUTTON button) { return GetAsyncKeyState(magic_enum::enum_integer(button)) & 0x8000; }
 
 bool Mouse::Click() {
     spdlog::debug("{} Clicking mouse", TAG);
@@ -47,4 +47,4 @@ bool Mouse::Click() {
     return uSent != 2;
 }
 
-bool Mouse::Click(ImVec2 mousePosition) { return false; }
+bool Mouse::Click(const ImVec2 mouse_position) { return false; }

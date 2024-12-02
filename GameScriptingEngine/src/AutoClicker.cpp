@@ -4,6 +4,7 @@
 #include "input/Keyboard.hpp"
 #include "input/Mouse.hpp"
 
+#include <ranges>
 #include <ImGui/imgui.h>
 #include <magic_enum/magic_enum.hpp>
 #include <spdlog/spdlog.h>
@@ -18,14 +19,14 @@ AutoClicker::~AutoClicker() { stopClicking(); }
 
 void AutoClicker::render() {
     ImGui::Separator();
-    // TODO: make this prettier without so much stupid code - youtube tutorials on imgui style or something
+    // TODO: make this prettier without so much stupid code - YouTube tutorials on DearImGui style or something
 
     keybindWidget();
     intervalWidget();
 
 
     ImGui::SetCursorScreenPos(ImGui::GetCursorScreenPos() + ImVec2(20, 0));
-    ImGui::Text("Current period in ms: {%llu}", interval.asMicroseconds().count());
+    ImGui::Text("Current period in ms: {%lld}", interval.asMicroseconds().count());
 
     ImGui::Separator();
 }
@@ -33,13 +34,13 @@ void AutoClicker::render() {
 void AutoClicker::keybindWidget() {
     ImGui::SetCursorScreenPos(ImGui::GetCursorScreenPos() + ImVec2(20, 0));
 
-    std::string current_preview = Input::Keyboard::KeyName(keybind);
+    const std::string current_preview = Input::Keyboard::KeyName(keybind);
     if (ImGui::BeginCombo("Keybind", current_preview.c_str(), ImGuiComboFlags_WidthFitPreview)) {
-        for (const auto& [value, name] : magic_enum::enum_entries<Input::Keyboard::Key>()) {
-            bool is_selected = value == keybind;
-            if (ImGui::Selectable(Input::Keyboard::KeyName(value).c_str(), is_selected)) {
+        for (const auto& key : magic_enum::enum_entries<Input::Keyboard::Key>() | std::views::keys) {
+            const bool is_selected = key == keybind;
+            if (ImGui::Selectable(Input::Keyboard::KeyName(key).c_str(), is_selected)) {
                 Input::Keyboard::RemoveKeybind(keybind);
-                keybind = value;
+                keybind = key;
                 Input::Keyboard::AddKeybind(keybind, [this] { isRunning ? stopClicking() : startClicking(); });
             }
 
@@ -92,6 +93,9 @@ void AutoClicker::startClicking() {
 };
 
 void AutoClicker::stopClicking() {
+    if (!isRunning)
+        return;
+
     spdlog::debug("{} stopped clicking.", TAG);
     isRunning = false;
     if(clicker.joinable()) clicker.join();
