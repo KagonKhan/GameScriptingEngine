@@ -21,3 +21,7 @@
 - abstracted backend/ windows winapi etc
 https://www.youtube.com/watch?v=BIZyxja3Qls
 - imgui d3d https://www.youtube.com/watch?v=NcClcNlsfdw
+
+
+- CHEAT ENGINE INTEGRATION:
+- https://www.youtube.com/watch?v=aAnttXLw5yo

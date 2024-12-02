@@ -1,4 +1,5 @@
 #include "input/Keyboard.hpp"
+#include "input/Keyboard.hpp"
 
 #include <Windows.h>
 #include <functional>
@@ -14,6 +15,7 @@ inline const std::unordered_map<Keyboard::KEY, std::string> SPECIAL_VK_TO_NAME{
     {Keyboard::KEY::F1, "F1"}, {Keyboard::KEY::F2, "F2"}, {Keyboard::KEY::F3, "F3"},
     {Keyboard::KEY::F4, "F4"}, {Keyboard::KEY::F5, "F5"}, {Keyboard::KEY::F6, "F6"},
     {Keyboard::KEY::F7, "F7"}, {Keyboard::KEY::F8, "F8"}, {Keyboard::KEY::F9, "F9"},
+    {Keyboard::KEY::LEFT_CONTROL, "Left Control"},
 };
 } // namespace
 

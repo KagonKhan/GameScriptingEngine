@@ -18,6 +18,8 @@ add_executable (GameScriptingEngine
     "src/input/Keyboard.cpp"
     "src/input/Mouse.cpp"
 
+    "src/components/RectangleMarker.cpp"
+
 )
 
 target_include_directories(GameScriptingEngine

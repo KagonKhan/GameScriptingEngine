@@ -1,5 +1,7 @@
 #include "App.hpp"
 
+#include "input/Mouse.hpp"
+
 #include <GLFW/glfw3.h>
 #include <ImGui/imgui.h>
 #include <spdlog/spdlog.h>
@@ -21,43 +23,49 @@ auto fix_monitor_dpi_differences = [windowDPI = 0.0f]() mutable {
 };
 } // namespace
 
+void App::Start() {
+    Input::Keyboard::AddKeybind(Input::Keyboard::KEY::LEFT_CONTROL, [&] { enableOverlay = !enableOverlay; });
 
-void App::start() {
+
     while (!glfwWindowShouldClose(window) && isRunning) {
         glfwPollEvents();
 
+        if (enableOverlay) {
+            ImGui::GetMainViewport()->Flags |= ImGuiViewportFlags_NoInputs;
+        }
+        fix_monitor_dpi_differences();
+
         window.startFrame();
 
-        render();
+        Render();
 
         window.endFrame();
     }
+
+    Input::Keyboard::RemoveKeybind(Input::Keyboard::KEY::Q);
 }
 
-void App::render() {
-    /*ImGui::GetMainViewport()->Flags |= ImGuiViewportFlags_NoInputs;
-    ImGui::GetWindowViewport()->Flags &= ~(ImGuiWindowFlags_NoInputs);*/
+void App::Render() {
     static bool demo = false;
 
-    if (ImGui::Begin("GameScriptingEngine", &isRunning)) {
-        fix_monitor_dpi_differences();
+    ImGui::Begin("GameScriptingEngine", &isRunning);
 
-        ImGui::Checkbox("AutoClicker", &clicker.isVisible);
+    ImGui::Separator();
+    areaMarker.render();
+    ImGui::Separator();
 
-        if (clicker.isVisible) {
-            clicker.render();
-        }
+    ImGui::Checkbox("AutoClicker", &clicker.isVisible);
 
-        // TODO: a way to achieve overlay is to change  mouse click through on a keybind, or maybe while holding ctrl?
-        // This would allow me to draw on the screen easily.
-
-        ImGui::Checkbox("Demo", &demo);
-        if (demo)
-            ImGui::ShowDemoWindow();
-
-
-    } else {
-        spdlog::critical("Cannot write to main window!");
+    if (clicker.isVisible) {
+        clicker.render();
     }
+
+
+    ImGui::Separator();
+    ImGui::Checkbox("Demo", &demo);
+    if (demo)
+        ImGui::ShowDemoWindow();
+
+
     ImGui::End();
 }

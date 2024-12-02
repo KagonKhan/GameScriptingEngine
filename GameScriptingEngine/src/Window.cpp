@@ -7,11 +7,10 @@
 #include <spdlog/spdlog.h>
 #include <stdexcept>
 
-
 static void glfw_error_callback(int error, const char* description) {
     spdlog::error("GLFW Error {}: {}\n", error, description);
 }
-
+// TODO: this isn't just window, its also backend...
 Window::Window() {
     glfwSetErrorCallback(glfw_error_callback);
 
@@ -74,12 +73,12 @@ void Window::setupGLFWWindow() {
     glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_FALSE);
     glfwWindowHint(GLFW_MOUSE_PASSTHROUGH, GLFW_TRUE);
 
-    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    //glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
 
     const auto video_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-    if (window = glfwCreateWindow(/*video_mode->width-*/1, /*video_mode->height-*/1, "hello world", nullptr, nullptr);
+    if (window = glfwCreateWindow(video_mode->width+1, video_mode->height+1, "hello world", nullptr, nullptr);
         window == nullptr)
         throw std::runtime_error("Could not create the window");
 

@@ -8,5 +8,5 @@ int main() {
     initialize();
 
     App app;
-    app.start();
+    app.Start();
 }

@@ -17,5 +17,6 @@ private:
     static LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
 
     inline static HHOOK                                        keyboardHook;
+    inline static HHOOK                                        mouseHook;
     inline static std::function<void(int keyCode, int action)> keyboardSubscriber;
 };

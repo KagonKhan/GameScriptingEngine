@@ -1,20 +1,24 @@
 #pragma once
 #include "AutoClicker.hpp"
 #include "Window.hpp"
+#include "components/RectangleMarker.hpp"
+#include "ImGui/imgui.h"
 
 
 class App {
 public:
-    void start();
+    static void Start();
+    static bool IsOverlayMode() { return enableOverlay; }
+    static void FlipMode() { enableOverlay = !enableOverlay; }
 
 private:
-    void render();
+    static void Render();
 
 private:
-    bool        isRunning{true};
+    inline static bool isRunning{true};
+    inline static bool enableOverlay{false};
 
-    Window      window;
-    AutoClicker clicker;
-
-    bool enableOverlay{false};
+    inline static Window      window;
+    inline static AutoClicker clicker;
+    inline static RectangleMarker           areaMarker;
 };

@@ -11,7 +11,7 @@ class Keyboard {
 public:
     enum class KEY : std::uint8_t {
         W = 'W',
-        A = 'A', 
+        A = 'A',
         S = 'S',
         D = 'D',
         E = 'E',
@@ -27,6 +27,8 @@ public:
         F7 = 0x76,
         F8 = 0x77,
         F9 = 0x78,
+
+        LEFT_CONTROL = 0xA2,
     };
 
     static std::string KeyName(KEY pressed_button);

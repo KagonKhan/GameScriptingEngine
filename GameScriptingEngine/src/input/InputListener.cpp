@@ -30,7 +30,7 @@ void InputListener::SubscribeKeyPress(std::function<void(int keyCode, int action
 
 LRESULT CALLBACK InputListener::KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if (nCode == HC_ACTION) {
-        auto keyboardData = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
+        const auto keyboardData = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
 
         // TODO: maybe skip callbacks for key held - repeats?
         if (keyboardSubscriber)
