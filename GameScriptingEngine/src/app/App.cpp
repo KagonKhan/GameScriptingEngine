@@ -1,4 +1,4 @@
-#include "App.hpp"
+#include "app/App.hpp"
 
 #include <ImGui/imgui.h>
 #include <spdlog/spdlog.h>
@@ -28,9 +28,12 @@ const char* windowName(bool isOverlayMode) {
 
 void App::Start() {
     Input::Keyboard::AddKeybind(Input::Keyboard::KEY::LEFT_CONTROL, [&] { overlayEnabled = !overlayEnabled; });
+    Random::Init();
+
+    while (isRunning && !glfwWindowShouldClose(window)) {
+        fpsCounter.measure();
 
 
-    while (!glfwWindowShouldClose(window) && isRunning) {
         glfwPollEvents();
 
         if (overlayEnabled) {
@@ -43,16 +46,32 @@ void App::Start() {
         Render();
 
         window.endFrame();
+        auto t2 = std::chrono::steady_clock::now();
     }
 
     Input::Keyboard::RemoveKeybind(Input::Keyboard::KEY::Q);
 }
 
+
 void App::Render() {
     static bool demo = false;
 
     ImGui::Begin(windowName(overlayEnabled), &isRunning);
+    ImGui::Text("Current fps %.3f", fpsCounter.fps());
 
+    RenderComponents();
+
+
+    ImGui::Separator();
+    ImGui::Checkbox("Demo", &demo);
+    if (demo)
+        ImGui::ShowDemoWindow();
+
+
+    ImGui::End();
+}
+
+void App::RenderComponents() {
     ImGui::Separator();
     areaMarker.render();
     ImGui::Separator();
@@ -69,13 +88,5 @@ void App::Render() {
     if (clicker.isVisible) {
         clicker.render();
     }
-
-
-    ImGui::Separator();
-    ImGui::Checkbox("Demo", &demo);
-    if (demo)
-        ImGui::ShowDemoWindow();
-
-
-    ImGui::End();
 }
+void App::TemporaryRender() {}

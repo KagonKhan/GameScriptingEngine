@@ -2,7 +2,6 @@
 #include "ImGui/imgui.h"
 
 
-// why u no work. when moved to monitor pixel reader cpp it works/ GLAD?
 class Image {
 public:
     Image();

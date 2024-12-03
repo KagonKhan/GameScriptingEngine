@@ -21,6 +21,7 @@ void Image::setData(const int* data) const {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
+
 void Image::resize(ImVec2 newSize) {
     if (size == newSize)
         return;

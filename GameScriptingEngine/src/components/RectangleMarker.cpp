@@ -1,6 +1,6 @@
 #include "components/RectangleMarker.hpp"
 
-#include "App.hpp"
+#include "app/App.hpp"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "input/Mouse.hpp"
@@ -58,7 +58,6 @@ done_marking RectangleMarker::markArea() {
                                                   ImGui::ColorConvertFloat4ToU32({0.5, 0.5, 0.5, 0.5}));
 
     if (Input::Mouse::IsButtonPressed(Input::Mouse::BUTTON::LEFT)) {
-        spdlog::critical("finalizing");
         markedArea.Min = rectMin.value();
         markedArea.Max = Input::Mouse::GetPosition();
 

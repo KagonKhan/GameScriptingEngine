@@ -6,18 +6,19 @@
 #include <memory>
 
 
+// TODO: idk about this name, iffy
 class MonitorPixelReader {
 public:
     MonitorPixelReader() = default;
-    MonitorPixelReader(ImRect area);
+    explicit MonitorPixelReader(ImRect area);
     ~MonitorPixelReader();
 
     void updateImage();
-    void updateRegion(ImRect newArea);
-    void render(ImVec2 size = {0, 0});
+    void updateRegion(ImRect new_area);
+    void render(ImVec2 size = {0, 0}) const;
 
 private:
-    void resize(ImRect newArea);
+    void resize(ImRect new_area);
 
     ImRect                     region;
     std::unique_ptr<RGBQUAD[]> pixels;
@@ -26,8 +27,7 @@ private:
     HDC        hDesktopDC  = GetDC(hDesktopWnd);
     HDC        hCaptureDC  = CreateCompatibleDC(hDesktopDC);
     HBITMAP    hCaptureBitmap;
-    BITMAPINFO bmi {0};
+    BITMAPINFO bmi {};
     Image      image {};
 };
 
-// TODO: idk about this name, iffy

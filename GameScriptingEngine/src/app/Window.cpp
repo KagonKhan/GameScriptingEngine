@@ -1,4 +1,4 @@
-#include "Window.hpp"
+#include "app/Window.hpp"
 #include <GLAD/GLAD.h>
 
 #include "ImGui/imgui_impl_opengl3.h"

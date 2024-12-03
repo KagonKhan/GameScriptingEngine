@@ -9,9 +9,9 @@ private:
 public:
     bool isVisible{true};
 
-    void render();
-    ImRect get() const { return markedArea; }
-    void   reset() { markedArea = {0, 0, 0, 0}; }
+    void   render();
+    ImRect get() const {return markedArea;}
+    void reset() { markedArea = {0, 0, 0, 0}; }
 
 private:
     bool markArea();
