@@ -10,14 +10,15 @@ public:
     bool isVisible{true};
 
     void render();
+    ImRect get() const { return markedArea; }
+    void   reset() { markedArea = {0, 0, 0, 0}; }
 
 private:
     bool markArea();
 
 private:
-    ImRect markedArea{};
-    bool   isDoneMarking{true};
-    bool   showMarked{false};
-
+    ImRect                markedArea{};
+    bool                  isDoneMarking{true};
+    bool                  showMarked{false};
     std::optional<ImVec2> rectMin{std::nullopt};
 };

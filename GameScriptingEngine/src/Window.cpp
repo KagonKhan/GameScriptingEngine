@@ -1,11 +1,14 @@
 #include "Window.hpp"
+#include <GLAD/GLAD.h>
 
-#include <GLFW/glfw3.h>
-#include <ImGui/imgui.h>
-#include <ImGui/imgui_impl_glfw.h>
-#include <ImGui/imgui_impl_opengl3.h>
+#include "ImGui/imgui_impl_opengl3.h"
+#include "ImGui/imgui_impl_glfw.h"
+
+
+
 #include <spdlog/spdlog.h>
 #include <stdexcept>
+
 
 static void glfw_error_callback(int error, const char* description) {
     spdlog::error("GLFW Error {}: {}\n", error, description);
@@ -36,6 +39,7 @@ void Window::startFrame() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+    
 }
 
 void Window::endFrame() {
@@ -82,11 +86,17 @@ void Window::setupGLFWWindow() {
         window == nullptr)
         throw std::runtime_error("Could not create the window");
 
-
+    
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
-
+    int version = gladLoadGL(glfwGetProcAddress);
+    if (version == 0) {
+        spdlog::critical("Failed to initialize OpenGL Context!");
+        exit(1);
+    }
+    // Successfully loaded OpenGL
+    spdlog::debug("Loaded OpenGL {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version)) ;
 }
 
 void Window::setupImGui() {

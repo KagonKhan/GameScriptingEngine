@@ -10,17 +10,18 @@ add_executable (GameScriptingEngine
 
     "include/Utils.hpp"
 
-    "src/AutoClicker.cpp" 
     "src/Window.cpp" 
     "src/App.cpp" 
 
     "src/input/InputListener.cpp" 
     "src/input/Keyboard.cpp"
     "src/input/Mouse.cpp"
-
+    
+    "src/components/AutoClicker.cpp" 
     "src/components/RectangleMarker.cpp"
+    "src/components/MonitorPixelReader.cpp"
 
-)
+ "src/components/MonitorPixelReader.cpp" "src/components/Image.cpp")
 
 target_include_directories(GameScriptingEngine
     PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
@@ -43,6 +44,7 @@ target_link_libraries(GameScriptingEngine
     PUBLIC glm::glm
     PUBLIC spdlog::spdlog
     PUBLIC magic_enum::magic_enum
+    PUBLIC GLAD
 )
 
 # TODO: Add tests and install targets if needed.

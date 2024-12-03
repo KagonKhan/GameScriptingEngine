@@ -1,4 +1,6 @@
 #pragma once
+#include "GLAD/GLAD.h"
+
 #include <GLFW/glfw3.h>
 
 class Window {

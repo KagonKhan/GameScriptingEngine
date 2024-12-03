@@ -36,7 +36,6 @@ void RectangleMarker::render() {
 
 // TODO: cleaner version? Return value - isMarkingInProcess
 done_marking RectangleMarker::markArea() {
-    spdlog::info("marking area");
     // TODO: the early returns are needed because what if the user holds the mouse button... idk how to make this nicer
     // for now.
     if (App::IsOverlayMode()) {
@@ -62,6 +61,10 @@ done_marking RectangleMarker::markArea() {
         spdlog::critical("finalizing");
         markedArea.Min = rectMin.value();
         markedArea.Max = Input::Mouse::GetPosition();
+
+        if (markedArea.IsInverted()) {
+            std::swap(markedArea.Min, markedArea.Max);
+        }
 
         rectMin.reset();
         return done_marking{true};
