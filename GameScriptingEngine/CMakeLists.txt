@@ -20,10 +20,17 @@ add_executable (GameScriptingEngine
     "src/components/Image.cpp"
     "src/components/MonitorPixelReader.cpp"
     "src/components/RectangleMarker.cpp"
+    "src/components/ActionRecorder.cpp"
+
+    "src/components/search/TemplateMatcher.cpp"
+    
+    "src/components/ai/ai.cpp" 
 
     "src/input/InputListener.cpp"
     "src/input/Keyboard.cpp"
     "src/input/Mouse.cpp"
+
+
 )
 
 target_include_directories(GameScriptingEngine

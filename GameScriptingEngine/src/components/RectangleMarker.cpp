@@ -26,7 +26,7 @@ void RectangleMarker::render() {
     if (ImGui::Button("Mark area") || !isDoneMarking) {
         isDoneMarking = markArea();
     }
-    if (markedArea.GetArea() != 0) {
+    if (static_cast<int>(markedArea.GetArea()) <= 0) {
         ImGui::SameLine();
         if (ImGui::Button(showMarked ? "Hide marked area" : "Show marked area")) {
             showMarked = !showMarked;
