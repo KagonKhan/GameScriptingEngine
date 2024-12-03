@@ -40,9 +40,10 @@ project ("GameScriptingEngine")
 
 
 #INSTALL_CONAN()
-find_package(FMT REQUIRED)
+find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(FMT REQUIRED)
 find_package(magic_enum REQUIRED)
 
 # Include sub-projects.

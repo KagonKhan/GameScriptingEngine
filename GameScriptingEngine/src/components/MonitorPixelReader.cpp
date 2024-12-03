@@ -31,13 +31,13 @@ MonitorPixelReader::~MonitorPixelReader() {
 }
 void MonitorPixelReader::updateRegion(const ImRect new_area) { resize(new_area); }
 
+void MonitorPixelReader::updateRender() { image.setData(reinterpret_cast<int*>(pixels.get())); }
+
 void MonitorPixelReader::updateImage() {
     BitBlt(hCaptureDC, 0, 0, region.GetWidth(), region.GetHeight(), hDesktopDC, region.Min.x, region.Min.y,
            SRCCOPY | CAPTUREBLT);
 
     GetDIBits(hCaptureDC, hCaptureBitmap, 0, region.GetHeight(), pixels.get(), &bmi, DIB_RGB_COLORS);
-
-    image.setData(reinterpret_cast<int*>(pixels.get()));
 }
 
 void MonitorPixelReader::render(const ImVec2 size) const {

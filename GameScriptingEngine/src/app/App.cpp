@@ -2,6 +2,7 @@
 
 #include <ImGui/imgui.h>
 #include <spdlog/spdlog.h>
+#include <GLFW/glfw3.h>
 
 namespace {
 auto fix_monitor_dpi_differences = [windowDPI = 0.0f]() mutable {
@@ -30,6 +31,7 @@ void App::Start() {
     Input::Keyboard::AddKeybind(Input::Keyboard::KEY::LEFT_CONTROL, [&] { overlayEnabled = !overlayEnabled; });
     Random::Init();
 
+    // TODO: frame limiter? without image processing its ~1000 i dont want to use vsync
     while (isRunning && !glfwWindowShouldClose(window)) {
         fpsCounter.measure();
 
@@ -79,6 +81,7 @@ void App::RenderComponents() {
     if (auto area = areaMarker.get(); area.GetArea() > 0) {
         reader.updateRegion(area);
         reader.updateImage();
+        reader.updateRender();
         reader.render();
     }
 

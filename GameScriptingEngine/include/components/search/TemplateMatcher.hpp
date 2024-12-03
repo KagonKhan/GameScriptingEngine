@@ -1,30 +1,30 @@
 #pragma once
 
 // TODO: asset manager with dynamic loading
-class TemplateMatcher {
-    void templateMatch(const cv::Mat& screen, const cv::Mat& target) {
-        cv::Mat result;
-        cv::matchTemplate(screen, target, result, cv::TM_CCOEFF_NORMED);
-
-        double    minVal, maxVal;
-        cv::Point minLoc, maxLoc;
-        cv::minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
-
-        if (maxVal > 0.8) { // Adjust threshold for fuzziness
-            std::cout << "Target found at: " << maxLoc << " with confidence: " << maxVal << std::endl;
-            // Optionally draw a rectangle around the detected region
-            cv::rectangle(screen, maxLoc, cv::Point(maxLoc.x + target.cols, maxLoc.y + target.rows),
-                          cv::Scalar(0, 255, 0), 2);
-            cv::imshow("Result", screen);
-            cv::waitKey(0);
-        } else {
-            std::cout << "Target not found." << std::endl;
-        }
-
-           cv::Mat img(height, width, CV_8UC3);
-        GetDIBits(hdcMem, hBitmap, 0, height, img.data, &bmi, DIB_RGB_COLORS);
-    }
-};
+//class TemplateMatcher {
+//    void templateMatch(const cv::Mat& screen, const cv::Mat& target) {
+//        cv::Mat result;
+//        cv::matchTemplate(screen, target, result, cv::TM_CCOEFF_NORMED);
+//
+//        double    minVal, maxVal;
+//        cv::Point minLoc, maxLoc;
+//        cv::minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
+//
+//        if (maxVal > 0.8) { // Adjust threshold for fuzziness
+//            std::cout << "Target found at: " << maxLoc << " with confidence: " << maxVal << std::endl;
+//            // Optionally draw a rectangle around the detected region
+//            cv::rectangle(screen, maxLoc, cv::Point(maxLoc.x + target.cols, maxLoc.y + target.rows),
+//                          cv::Scalar(0, 255, 0), 2);
+//            cv::imshow("Result", screen);
+//            cv::waitKey(0);
+//        } else {
+//            std::cout << "Target not found." << std::endl;
+//        }
+//
+//           cv::Mat img(height, width, CV_8UC3);
+//        GetDIBits(hdcMem, hBitmap, 0, height, img.data, &bmi, DIB_RGB_COLORS);
+//    }
+//};
 
 
 // TODO:

@@ -48,12 +48,15 @@ target_include_directories(GameScriptingEngine
     PUBLIC include
 )
 target_link_libraries(GameScriptingEngine
-    PUBLIC fmt::fmt
-    PUBLIC ImGui
+    PUBLIC glfw
     PUBLIC glm::glm
     PUBLIC spdlog::spdlog
+    PUBLIC fmt::fmt
     PUBLIC magic_enum::magic_enum
+
+    PUBLIC ImGui
     PUBLIC GLAD
+
 )
 
 # TODO: Add tests and install targets if needed.

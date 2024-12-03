@@ -15,6 +15,7 @@ public:
 
     void updateImage();
     void updateRegion(ImRect new_area);
+    void updateRender();
     void render(ImVec2 size = {0, 0}) const;
 
 private:

@@ -9,6 +9,8 @@
 namespace Input {
 class Keyboard {
 public:
+    // TODO: a way to retrieve unused keybinds, and a descriptor where a keybind is assigned?
+    // A screen / window for all keybinds? Like in games?
     enum class KEY : std::uint8_t {
         W = 'W',
         A = 'A',
