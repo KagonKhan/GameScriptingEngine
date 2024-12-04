@@ -1,4 +1,4 @@
-#include "components/AutoClicker.hpp"
+#include "components/interaction/AutoClicker.hpp"
 
 #include "Utils.hpp"
 #include "input/Keyboard.hpp"

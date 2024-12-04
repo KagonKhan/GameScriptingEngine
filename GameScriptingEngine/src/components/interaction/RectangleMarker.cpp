@@ -7,6 +7,7 @@
 
 #include <spdlog/spdlog.h>
 
+
 namespace {
 using done_marking = bool;
 }
@@ -19,15 +20,18 @@ void RectangleMarker::render() {
                 static_cast<int>(markedArea.Min.y), static_cast<int>(markedArea.Max.x),
                 static_cast<int>(markedArea.Max.y));
 
-    ImGui::SameLine();
     if (showMarked) {
         ImGui::GetForegroundDrawList()->AddRectFilled(markedArea.Min, markedArea.Max,
                                                       ImGui::ColorConvertFloat4ToU32({0.5, 0.5, 0.5, 0.5}));
     }
 
-
+    
     if (ImGui::Button("Mark area") || !isDoneMarking) {
         isDoneMarking = markArea();
+    }
+
+    if (static_cast<int>(markedArea.GetArea()) > 0 && (ImGui::SameLine(), ImGui ::Button("Reset"))) {
+        reset();
     }
     if (static_cast<int>(markedArea.GetArea()) > 0) {
         ImGui::SameLine();

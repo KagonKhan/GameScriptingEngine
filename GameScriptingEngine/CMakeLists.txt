@@ -35,6 +35,8 @@ add_executable (GameScriptingEngine
 
 )
 
+
+
 target_include_directories(GameScriptingEngine
     PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
@@ -61,5 +63,8 @@ target_link_libraries(GameScriptingEngine
     PUBLIC GLAD
 
 )
+
+
+
 
 # TODO: Add tests and install targets if needed.

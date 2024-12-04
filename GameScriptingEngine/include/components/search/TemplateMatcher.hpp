@@ -2,10 +2,8 @@
 
 #include "app/App.hpp"
 
-#include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
-
-
+#include <opencv2/imgproc.hpp>
 #include <spdlog/spdlog.h>
 
 
@@ -40,18 +38,17 @@ public:
             cv::minMaxLoc(result, &min_val, &max_val, &min_loc, &max_loc);
 
             if (max_val >= threshold) {
-                spdlog::debug("{} Found the target", TAG);
+                spdlog::debug("{} Found the target, with confidence: {}", TAG, max_val);
                 return MatchResult{.position = ImVec2{static_cast<float>(max_loc.x), static_cast<float>(max_loc.y)},
                                    .size = ImVec2{static_cast<float>(target.cols), static_cast<float>(target.rows)}};
                 // TODO: Extend imgui for <int> types? avoid unnecessary casting here.
+            } else {
+                spdlog::debug("{} Target not found, confidence requested: {}, max found {}", TAG, threshold, max_val);
             }
-            spdlog::critical("{} confidence", max_val);
-
         } catch (...) {
             spdlog::critical("FAILURE");
         } // TODO: what to do with exceptions? forward them so imgui can parse?
 
-        spdlog::debug("{} Target not found", TAG);
         return std::nullopt;
     }
 };

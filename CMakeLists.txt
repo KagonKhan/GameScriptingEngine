@@ -46,6 +46,7 @@ find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(FMT REQUIRED)
 find_package(magic_enum REQUIRED)
+find_package(TBB REQUIRED)
 
 # Include sub-projects.
 add_subdirectory(external/src/ImGui)

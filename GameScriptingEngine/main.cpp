@@ -8,6 +8,9 @@ int         dummy_error_handler(int status, char const* func_name, char const* e
     // Do nothing -- will suppress console output
     return 0; // Return value is not used
 }
+
+
+// TODO: optimize conan file especially opencv module
 int main() {
     cv::redirectError(dummy_error_handler);
     initialize();
