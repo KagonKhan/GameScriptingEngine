@@ -40,7 +40,7 @@ target_include_directories(GameScriptingEngine
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET GameScriptingEngine PROPERTY CXX_STANDARD 23)
 endif()
-
+ 
 
 
 target_include_directories(GameScriptingEngine
@@ -53,6 +53,7 @@ target_link_libraries(GameScriptingEngine
     PUBLIC spdlog::spdlog
     PUBLIC fmt::fmt
     PUBLIC magic_enum::magic_enum
+    PUBLIC opencv::opencv
 
     PUBLIC ImGui
     PUBLIC GLAD

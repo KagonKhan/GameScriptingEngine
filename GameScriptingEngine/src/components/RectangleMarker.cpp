@@ -11,6 +11,9 @@ namespace {
 using done_marking = bool;
 }
 
+
+// TODO: add escape keybind to stop the current action?
+// TODO: make sure it works with inverted areas (negative)
 void RectangleMarker::render() {
     ImGui::Text("Marked area: (%d, %d),(%d, %d)", static_cast<int>(markedArea.Min.x),
                 static_cast<int>(markedArea.Min.y), static_cast<int>(markedArea.Max.x),
@@ -26,7 +29,7 @@ void RectangleMarker::render() {
     if (ImGui::Button("Mark area") || !isDoneMarking) {
         isDoneMarking = markArea();
     }
-    if (static_cast<int>(markedArea.GetArea()) <= 0) {
+    if (static_cast<int>(markedArea.GetArea()) > 0) {
         ImGui::SameLine();
         if (ImGui::Button(showMarked ? "Hide marked area" : "Show marked area")) {
             showMarked = !showMarked;

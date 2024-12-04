@@ -60,3 +60,15 @@ private:
     inline static thread_local std::uniform_int_distribution<std::mt19937::result_type> s_Distribution;
 };
 
+namespace Utils {
+using timepoint = std::chrono::steady_clock::time_point;
+
+inline timepoint now() { return std::chrono::steady_clock::now(); }
+
+inline long long duration_ms(timepoint const& t1, timepoint const& t2) {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+}
+inline long long duration_us(timepoint const& t1, timepoint const& t2) {
+    return std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+}
+} // namespace Utils

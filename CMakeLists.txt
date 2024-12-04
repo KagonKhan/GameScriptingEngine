@@ -1,4 +1,4 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
+# CMakeList.txt : Top-level CMake project file, do global configuration
 # and include sub-projects here.
 #
 function(print_header header)
@@ -24,7 +24,7 @@ function(install_conan)
         WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/ "
     )
     print_header("CONAN DEPS INSTALLED")
-endfunction()
+endfunction() 
 
 
 cmake_minimum_required (VERSION 3.8)
@@ -41,6 +41,7 @@ project ("GameScriptingEngine")
 
 #INSTALL_CONAN()
 find_package(glfw3 REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(FMT REQUIRED)

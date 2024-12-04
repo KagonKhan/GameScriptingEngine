@@ -4,10 +4,14 @@
 
 #include <Windows.h>
 #include <memory>
+#include <opencv2/core/core.hpp>
 
 
 // TODO: idk about this name, iffy
 class MonitorPixelReader {
+private:
+    inline static constexpr char const* const TAG{"[MonitorPixelReader]"};
+
 public:
     MonitorPixelReader() = default;
     explicit MonitorPixelReader(ImRect area);
@@ -17,6 +21,7 @@ public:
     void updateRegion(ImRect new_area);
     void updateRender();
     void render(ImVec2 size = {0, 0}) const;
+    cv::Mat getImage();
 
 private:
     void resize(ImRect new_area);

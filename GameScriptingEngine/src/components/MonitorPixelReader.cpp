@@ -44,3 +44,12 @@ void MonitorPixelReader::render(const ImVec2 size) const {
     const ImVec2 render_size = (static_cast<int>(size.x) * static_cast<int>(size.y)) == 0 ? image.getSize() : size;
     ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), render_size, ImVec2(0, 1), ImVec2(1, 0));
 }
+
+cv::Mat MonitorPixelReader::getImage() {
+    cv::Mat img(image.getSize().y, image.getSize().x, CV_8UC4);
+    GetDIBits(hCaptureDC, hCaptureBitmap, 0, region.GetHeight(), img.data, &bmi, DIB_RGB_COLORS);
+
+    cv::Mat fixed_orientation(image.getSize().y, image.getSize().x, CV_8UC4);
+    cv::flip(img, fixed_orientation, 0);
+    return fixed_orientation;
+}

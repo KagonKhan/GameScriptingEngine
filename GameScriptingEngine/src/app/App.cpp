@@ -1,8 +1,11 @@
 #include "app/App.hpp"
 
+#include "components/search/TemplateMatcher.hpp"
+
+#include <GLFW/glfw3.h>
 #include <ImGui/imgui.h>
 #include <spdlog/spdlog.h>
-#include <GLFW/glfw3.h>
+
 
 namespace {
 auto fix_monitor_dpi_differences = [windowDPI = 0.0f]() mutable {
@@ -38,6 +41,7 @@ void App::Start() {
 
         glfwPollEvents();
 
+        // TODO: convert it to be automatic, save the window rect, and detect mouse position. If inside - non overlay
         if (overlayEnabled) {
             ImGui::GetMainViewport()->Flags |= ImGuiViewportFlags_NoInputs;
         }
@@ -62,6 +66,7 @@ void App::Render() {
     ImGui::Text("Current fps %.3f", fpsCounter.fps());
 
     RenderComponents();
+    TemporaryRender();
 
 
     ImGui::Separator();
@@ -78,11 +83,34 @@ void App::RenderComponents() {
     areaMarker.render();
     ImGui::Separator();
 
+    if (drawRect) {
+        ImGui::GetForegroundDrawList()->AddRectFilled(areaMarker.get().GetTL() + mmin, areaMarker.get().GetTL() +mmax,
+                                                      ImGui::ColorConvertFloat4ToU32({1, 0, 1, 1}));
+   
+    }
+
     if (auto area = areaMarker.get(); area.GetArea() > 0) {
         reader.updateRegion(area);
         reader.updateImage();
         reader.updateRender();
         reader.render();
+
+
+
+        if (ImGui::Button("Match")) {
+            auto                   t1 = std::chrono::high_resolution_clock::now();
+            static TemplateMatcher matcher{};
+            auto                   screen = reader.getImage();
+            static cv::Mat         templ  = cv::imread("C:\\Users\\DogeDen\\Downloads\\templ.png");
+            
+            matcher.templateMatch(screen, templ);
+
+
+            
+            auto t2 = std::chrono::high_resolution_clock::now();
+            spdlog::critical("MEASUREMENT: {} ms",
+                             std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
+        }
     }
 
 

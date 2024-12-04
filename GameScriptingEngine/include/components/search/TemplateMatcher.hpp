@@ -1,30 +1,56 @@
 #pragma once
 
+#include "app/App.hpp"
+
+#include <opencv2/imgproc.hpp>
+#include <spdlog/spdlog.h>
+
+
+// TODO: template matching works, though im not sure about the fuzziness.
+// TODO: make sure the gray scale conversion is absolutely necessary.
 // TODO: asset manager with dynamic loading
-//class TemplateMatcher {
-//    void templateMatch(const cv::Mat& screen, const cv::Mat& target) {
-//        cv::Mat result;
-//        cv::matchTemplate(screen, target, result, cv::TM_CCOEFF_NORMED);
-//
-//        double    minVal, maxVal;
-//        cv::Point minLoc, maxLoc;
-//        cv::minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
-//
-//        if (maxVal > 0.8) { // Adjust threshold for fuzziness
-//            std::cout << "Target found at: " << maxLoc << " with confidence: " << maxVal << std::endl;
-//            // Optionally draw a rectangle around the detected region
-//            cv::rectangle(screen, maxLoc, cv::Point(maxLoc.x + target.cols, maxLoc.y + target.rows),
-//                          cv::Scalar(0, 255, 0), 2);
-//            cv::imshow("Result", screen);
-//            cv::waitKey(0);
-//        } else {
-//            std::cout << "Target not found." << std::endl;
-//        }
-//
-//           cv::Mat img(height, width, CV_8UC3);
-//        GetDIBits(hdcMem, hBitmap, 0, height, img.data, &bmi, DIB_RGB_COLORS);
-//    }
-//};
+// TODO: no need for this to be a class.
+class TemplateMatcher {
+private:
+    inline static constexpr char const* const TAG{"[TemplateMatcher]"};
+
+public:
+    struct MatchResult {
+        ImVec2 position;
+        ImVec2 size;
+    };
+
+
+    static std::optional<MatchResult> templateMatch(const cv::Mat& screen, const cv::Mat& target,
+                                                    double threshold = 0.8) {
+        cv::Mat gray_screen, gray_target;
+        cv::cvtColor(screen, gray_screen, cv::COLOR_BGRA2GRAY);
+        cv::cvtColor(target, gray_target, cv::COLOR_BGRA2GRAY);
+
+        try {
+            cv::Mat result;
+            cv::matchTemplate(gray_screen, gray_target, result, cv::TM_CCOEFF_NORMED);
+
+            double    min_val, max_val;
+            cv::Point min_loc, max_loc;
+
+            cv::minMaxLoc(result, &min_val, &max_val, &min_loc, &max_loc);
+
+            if (max_val > threshold) {
+                spdlog::debug("{} Found the target", TAG);
+                return MatchResult{.position = ImVec2{static_cast<float>(max_loc.x), static_cast<float>(max_loc.y)},
+                                   .size = ImVec2{static_cast<float>(target.cols), static_cast<float>(target.rows)}};
+                // TODO: Extend imgui for <int> types? avoid unnecessary casting here.
+            }
+
+        } catch (...) {
+            spdlog::critical("FAILURE");
+        } // TODO: what to do with exceptions? forward them so imgui can parse?
+
+        spdlog::debug("{} Target not found", TAG);
+        return std::nullopt;
+    }
+};
 
 
 // TODO:
@@ -34,8 +60,8 @@
 
 /*
  *#include <opencv2/opencv.hpp>
-#include <opencv2/xfeatures2d.hpp>
 #include <iostream>
+#include <opencv2/xfeatures2d.hpp>
 
 void featureMatching(const cv::Mat& screen, const cv::Mat& target) {
     auto sift = cv::xfeatures2d::SIFT::create();

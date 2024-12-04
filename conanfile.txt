@@ -8,9 +8,7 @@ spdlog/1.15.0
 magic_enum/0.9.7
 
 
-
-
-
+opencv/4.10.0
 
 
 
