@@ -5,6 +5,10 @@ out/
 .vs/
 
 
+# media files
+resources/
+
+
 
 # Prerequisites
 *.d

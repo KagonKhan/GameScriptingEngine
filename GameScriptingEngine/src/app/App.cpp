@@ -87,15 +87,18 @@ void App::RenderComponents() {
     ImGui::Separator();
 
 
+    static ScreenImageSaver saver;
     if (auto area = areaMarker.get(); area.GetArea() > 0) {
         reader.updateRegion(area);
         reader.updateImage();
         reader.updateRender();
         reader.render();
+
+
+        saver.save(reader.getImage());
     }
 
     templateMatcherWidget();
-
 
 
     ImGui::Checkbox("AutoClicker", &clicker.isVisible);
@@ -104,10 +107,7 @@ void App::RenderComponents() {
         clicker.render();
     }
 }
-void App::TemporaryRender() {
-    static ScreenImageSaver saver;
-    saver.render();
-}
+void App::TemporaryRender() {}
 
 
 void App::templateMatcherWidget() {

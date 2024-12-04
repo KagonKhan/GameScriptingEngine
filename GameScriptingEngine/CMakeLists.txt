@@ -33,7 +33,7 @@ add_executable (GameScriptingEngine
     "src/input/Mouse.cpp"
 
 
-)
+ "src/app/AssetManager.cpp")
 
 
 
