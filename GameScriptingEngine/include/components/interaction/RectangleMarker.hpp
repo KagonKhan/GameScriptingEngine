@@ -10,11 +10,10 @@ public:
     bool isVisible{true};
 
     void   render();
-    void   fixRectangleCorners();
     ImRect get() const { return markedArea; }
     void   reset() { markedArea = {0, 0, 0, 0}; }
 
-private:
+
     bool markArea();
 
 private:

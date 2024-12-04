@@ -1,5 +1,6 @@
 #include "app/App.hpp"
 
+#include "components/interaction/ScreenImageSaver.hpp"
 #include "components/search/TemplateMatcher.hpp"
 
 #include <GLFW/glfw3.h>
@@ -103,7 +104,10 @@ void App::RenderComponents() {
         clicker.render();
     }
 }
-void App::TemporaryRender() {}
+void App::TemporaryRender() {
+    static ScreenImageSaver saver;
+    saver.render();
+}
 
 
 void App::templateMatcherWidget() {

@@ -49,7 +49,7 @@ find_package(magic_enum REQUIRED)
 find_package(TBB REQUIRED)
 
 # Include sub-projects.
-add_subdirectory(external/src/ImGui)
+add_subdirectory(external/src)
 add_subdirectory ("GameScriptingEngine")
 
 
