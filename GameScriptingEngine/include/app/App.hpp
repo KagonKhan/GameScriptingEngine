@@ -22,7 +22,7 @@ private:
 
 private:
     inline static bool isRunning{true};
-    inline static bool overlayEnabled{false};
+    inline static bool overlayEnabled{true};
 
 
     inline static Window             window;

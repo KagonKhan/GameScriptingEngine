@@ -1,5 +1,6 @@
 #include "app/App.hpp"
 
+#include "app/AssetManager.hpp"
 #include "components/interaction/ScreenImageSaver.hpp"
 #include "components/search/TemplateMatcher.hpp"
 
@@ -70,6 +71,18 @@ void App::Render() {
     RenderComponents();
     TemporaryRender();
 
+    static GLImage image;
+    static cv::Mat mat = AssetManager::Retrieve("6.png");
+    if (static bool ranOnce = false; !ranOnce) {
+        image.resize({static_cast<float>(mat.cols), static_cast<float>(mat.rows)});
+        cv::Mat fmat;
+        cv::flip(mat, fmat, 0);
+        image.setData(reinterpret_cast<const int*>(fmat.data), fmat);
+        spdlog::critical("step: {}", (fmat.step & 3 )? 1 : 4 );
+        ranOnce = true;
+    }
+    ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), {800, 600}, ImVec2(0, 1),
+                 ImVec2(1, 0));
 
     ImGui::Separator();
     ImGui::Checkbox("Demo", &demo);
