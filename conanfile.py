@@ -2,6 +2,7 @@
 from conan import ConanFile
 from conan.tools.cmake import cmake_layout
 from conan.tools.files import copy
+import os.path
 
 
 class GSEconan(ConanFile):
@@ -32,13 +33,9 @@ class GSEconan(ConanFile):
         cmake_layout(self)
 
 
-    def generate(self):    
-        for dep in self.dependencies.values():
-            #src = dep.cpp_info.bindir
-            #dst = os.path.join(self.build_folder, self.cpp.build.bindir)
-            if dep.cpp_info.bindir:
-                print(dep.cpp_info.bindir)
-                copy(self, "*.dll", dep.cpp_info.bindir, self.build_folder)
-            #copy(self, "*.dylib", dep.cpp_info.libdirs[0], self.build_folder)
-            #copy(self, "*.dll", dep.cpp_info.libdirs[0], self.build_folder)
+    def generate(self):
+        for dep in filter(lambda d: d.cpp_info.bindirs, self.dependencies.values()):
+            copy(self, "*.dll", dep.cpp_info.bindir, os.path.join(self.build_folder, "GameScriptingEngine", self.cpp.build.bindir))
+
+
 
