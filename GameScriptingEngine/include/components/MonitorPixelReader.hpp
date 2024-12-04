@@ -1,6 +1,6 @@
 #pragma once
-#include "components/Image.hpp"
 #include "ImGui/imgui_internal.h"
+#include "app/GLImage.hpp"
 
 #include <Windows.h>
 #include <memory>
@@ -17,10 +17,10 @@ public:
     explicit MonitorPixelReader(ImRect area);
     ~MonitorPixelReader();
 
-    void updateImage();
-    void updateRegion(ImRect new_area);
-    void updateRender();
-    void render(ImVec2 size = {0, 0}) const;
+    void    updateImage();
+    void    updateRegion(ImRect new_area);
+    void    updateRender();
+    void    render(ImVec2 size = {0, 0}) const;
     cv::Mat getImage();
 
 private:
@@ -33,7 +33,6 @@ private:
     HDC        hDesktopDC  = GetDC(hDesktopWnd);
     HDC        hCaptureDC  = CreateCompatibleDC(hDesktopDC);
     HBITMAP    hCaptureBitmap;
-    BITMAPINFO bmi {};
-    Image      image {};
+    BITMAPINFO bmi{};
+    GLImage    image{};
 };
-

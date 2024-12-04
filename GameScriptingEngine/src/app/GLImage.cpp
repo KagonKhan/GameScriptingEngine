@@ -1,8 +1,8 @@
-#include "components/Image.hpp"
+#include "app/GLImage.hpp"
 
 #include <GLAD/GLAD.h>
 
-Image::Image() {
+GLImage::GLImage() {
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -14,15 +14,15 @@ Image::Image() {
     // glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB, 2560, 1440);
 }
 
-Image::~Image() { glDeleteTextures(1, &texture); }
+GLImage::~GLImage() { glDeleteTextures(1, &texture); }
 
-void Image::setData(const int* data) const {
+void GLImage::setData(const int* data) const {
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Image::resize(ImVec2 newSize) {
+void GLImage::resize(ImVec2 newSize) {
     if (size == newSize)
         return;
 

@@ -2,10 +2,10 @@
 #include "ImGui/imgui.h"
 
 
-class Image {
+class GLImage {
 public:
-    Image();
-    ~Image();
+    GLImage();
+    ~GLImage();
 
     void setData(const int* data) const;
     void resize(ImVec2 newSize);

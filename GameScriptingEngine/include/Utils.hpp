@@ -71,4 +71,7 @@ inline long long duration_ms(timepoint const& t1, timepoint const& t2) {
 inline long long duration_us(timepoint const& t1, timepoint const& t2) {
     return std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 }
+inline long long duration_ns(timepoint const& t1, timepoint const& t2) {
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count();
+}
 } // namespace Utils

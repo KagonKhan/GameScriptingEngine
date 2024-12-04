@@ -4,6 +4,7 @@
 
 #include <GLFW/glfw3.h>
 #include <ImGui/imgui.h>
+#include <opencv2/imgcodecs.hpp>
 #include <spdlog/spdlog.h>
 
 
@@ -78,40 +79,22 @@ void App::Render() {
     ImGui::End();
 }
 
+
 void App::RenderComponents() {
     ImGui::Separator();
     areaMarker.render();
     ImGui::Separator();
 
-    if (drawRect) {
-        ImGui::GetForegroundDrawList()->AddRectFilled(areaMarker.get().GetTL() + mmin, areaMarker.get().GetTL() +mmax,
-                                                      ImGui::ColorConvertFloat4ToU32({1, 0, 1, 1}));
-   
-    }
 
     if (auto area = areaMarker.get(); area.GetArea() > 0) {
         reader.updateRegion(area);
         reader.updateImage();
         reader.updateRender();
         reader.render();
-
-
-
-        if (ImGui::Button("Match")) {
-            auto                   t1 = std::chrono::high_resolution_clock::now();
-            static TemplateMatcher matcher{};
-            auto                   screen = reader.getImage();
-            static cv::Mat         templ  = cv::imread("C:\\Users\\DogeDen\\Downloads\\templ.png");
-            
-            matcher.templateMatch(screen, templ);
-
-
-            
-            auto t2 = std::chrono::high_resolution_clock::now();
-            spdlog::critical("MEASUREMENT: {} ms",
-                             std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
-        }
     }
+
+    templateMatcherWidget();
+
 
 
     ImGui::Checkbox("AutoClicker", &clicker.isVisible);
@@ -121,3 +104,30 @@ void App::RenderComponents() {
     }
 }
 void App::TemporaryRender() {}
+
+
+void App::templateMatcherWidget() {
+    static bool   draw = false;
+    static ImVec2 drawBegin, drawSize;
+
+    if (auto area = areaMarker.get(); area.GetArea() > 0) {
+        if (ImGui::Button("Find template")) {
+            static cv::Mat templateImage = cv::imread("C:\\Users\\DogeDen\\Downloads\\templ.png");
+            auto           result        = TemplateMatcher::templateMatch(reader.getImage(), templateImage);
+            if (result.has_value()) {
+                draw      = true;
+                drawBegin = result.value().position + area.GetTL();
+                drawSize  = result.value().size;
+            }
+        }
+    }
+
+    if (draw) {
+        ImGui::GetForegroundDrawList()->AddRectFilled(drawBegin, drawBegin + drawSize,
+                                                      ImGui::ColorConvertFloat4ToU32({1, 0, 1, 1}));
+    }
+
+    if (areaMarker.get().GetArea() < 1.0f) {
+        draw = false;
+    }
+}

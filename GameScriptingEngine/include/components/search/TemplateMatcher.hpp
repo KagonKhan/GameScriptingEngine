@@ -3,6 +3,9 @@
 #include "app/App.hpp"
 
 #include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
+
+
 #include <spdlog/spdlog.h>
 
 
@@ -22,7 +25,7 @@ public:
 
 
     static std::optional<MatchResult> templateMatch(const cv::Mat& screen, const cv::Mat& target,
-                                                    double threshold = 0.8) {
+                                                    double threshold = 0.3) {
         cv::Mat gray_screen, gray_target;
         cv::cvtColor(screen, gray_screen, cv::COLOR_BGRA2GRAY);
         cv::cvtColor(target, gray_target, cv::COLOR_BGRA2GRAY);
@@ -36,12 +39,13 @@ public:
 
             cv::minMaxLoc(result, &min_val, &max_val, &min_loc, &max_loc);
 
-            if (max_val > threshold) {
+            if (max_val >= threshold) {
                 spdlog::debug("{} Found the target", TAG);
                 return MatchResult{.position = ImVec2{static_cast<float>(max_loc.x), static_cast<float>(max_loc.y)},
                                    .size = ImVec2{static_cast<float>(target.cols), static_cast<float>(target.rows)}};
                 // TODO: Extend imgui for <int> types? avoid unnecessary casting here.
             }
+            spdlog::critical("{} confidence", max_val);
 
         } catch (...) {
             spdlog::critical("FAILURE");

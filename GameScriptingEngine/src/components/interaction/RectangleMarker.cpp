@@ -1,8 +1,8 @@
-#include "components/RectangleMarker.hpp"
+#include "components/interaction/RectangleMarker.hpp"
 
-#include "app/App.hpp"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
+#include "app/App.hpp"
 #include "input/Mouse.hpp"
 
 #include <spdlog/spdlog.h>
@@ -37,7 +37,8 @@ void RectangleMarker::render() {
     }
 }
 
-// TODO: cleaner version? Return value - isMarkingInProcess
+
+// TODO: cleaner version? 
 done_marking RectangleMarker::markArea() {
     // TODO: the early returns are needed because what if the user holds the mouse button... idk how to make this nicer
     // for now.
@@ -61,12 +62,14 @@ done_marking RectangleMarker::markArea() {
                                                   ImGui::ColorConvertFloat4ToU32({0.5, 0.5, 0.5, 0.5}));
 
     if (Input::Mouse::IsButtonPressed(Input::Mouse::BUTTON::LEFT)) {
-        markedArea.Min = rectMin.value();
         markedArea.Max = Input::Mouse::GetPosition();
+        markedArea.Min = rectMin.value();
 
-        if (markedArea.IsInverted()) {
-            std::swap(markedArea.Min, markedArea.Max);
-        }
+        if (markedArea.Min.x > markedArea.Max.x)
+            std::swap(markedArea.Min.x, markedArea.Max.x);
+        if (markedArea.Min.y > markedArea.Max.y)
+            std::swap(markedArea.Min.y, markedArea.Max.y);
+
 
         rectMin.reset();
         return done_marking{true};

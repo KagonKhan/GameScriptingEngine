@@ -1,4 +1,5 @@
 #include "components/MonitorPixelReader.hpp"
+
 #include <spdlog/spdlog.h>
 
 MonitorPixelReader::MonitorPixelReader(ImRect area) { resize(area); }
@@ -10,7 +11,7 @@ void MonitorPixelReader::resize(const ImRect new_area) {
         DeleteObject(hCaptureBitmap);
         hCaptureBitmap = CreateCompatibleBitmap(hDesktopDC, region.GetWidth(), region.GetHeight());
         SelectObject(hCaptureDC, hCaptureBitmap);
-        pixels         = std::make_unique<RGBQUAD[]>(static_cast<int>(region.GetArea()));
+        pixels = std::make_unique<RGBQUAD[]>(static_cast<int>(region.GetArea()));
 
         image.resize(region.GetSize());
 
@@ -25,9 +26,9 @@ void MonitorPixelReader::resize(const ImRect new_area) {
 }
 
 MonitorPixelReader::~MonitorPixelReader() {
-     ReleaseDC(hDesktopWnd, hDesktopDC);
-     DeleteDC(hCaptureDC);
-     DeleteObject(hCaptureBitmap);
+    ReleaseDC(hDesktopWnd, hDesktopDC);
+    DeleteDC(hCaptureDC);
+    DeleteObject(hCaptureBitmap);
 }
 void MonitorPixelReader::updateRegion(const ImRect new_area) { resize(new_area); }
 
@@ -42,9 +43,11 @@ void MonitorPixelReader::updateImage() {
 
 void MonitorPixelReader::render(const ImVec2 size) const {
     const ImVec2 render_size = (static_cast<int>(size.x) * static_cast<int>(size.y)) == 0 ? image.getSize() : size;
-    ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), render_size, ImVec2(0, 1), ImVec2(1, 0));
+    ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), render_size, ImVec2(0, 1),
+                 ImVec2(1, 0));
 }
 
+// TODO: is it possible to avoid flipping the image? windows reads bottom->top, cv expects top->bottom
 cv::Mat MonitorPixelReader::getImage() {
     cv::Mat img(image.getSize().y, image.getSize().x, CV_8UC4);
     GetDIBits(hCaptureDC, hCaptureBitmap, 0, region.GetHeight(), img.data, &bmi, DIB_RGB_COLORS);

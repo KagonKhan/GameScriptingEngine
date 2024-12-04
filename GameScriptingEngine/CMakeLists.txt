@@ -15,12 +15,14 @@ add_executable (GameScriptingEngine
     "src/app/App.cpp"
     "src/app/SmoothFPSCounter.cpp"
     "src/app/Window.cpp"
+    "src/app/GLImage.cpp"
 
-    "src/components/AutoClicker.cpp"
-    "src/components/Image.cpp"
     "src/components/MonitorPixelReader.cpp"
-    "src/components/RectangleMarker.cpp"
-    "src/components/ActionRecorder.cpp"
+
+    "src/components/interaction/AutoClicker.cpp"
+    "src/components/interaction/RectangleMarker.cpp"
+    "src/components/interaction/ActionRecorder.cpp"
+    "src/components/interaction/ScreenImageSaver.cpp"
 
     "src/components/search/TemplateMatcher.cpp"
     
