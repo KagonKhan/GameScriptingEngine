@@ -3,11 +3,10 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "app/App.hpp"
+#include "app/events/Events.hpp"
 #include "input/Mouse.hpp"
 
 #include <spdlog/spdlog.h>
-
-#include "app/events/Events.hpp"
 
 
 namespace {
@@ -27,9 +26,14 @@ void RectangleMarker::render() {
                                                       ImGui::ColorConvertFloat4ToU32({0.5, 0.5, 0.5, 0.5}));
     }
 
-    
+
     if (ImGui::Button("Mark area") || !isDoneMarking) {
         isDoneMarking = markArea();
+    }
+
+    if (!isDoneMarking) {
+        ImGui::GetBackgroundDrawList()->AddRectFilled({0, 0}, {2560, 1440},
+                                                      ImGui::ColorConvertFloat4ToU32({0, 0, 0, 0.7f}));
     }
 
     if (static_cast<int>(markedArea.GetArea()) > 0 && (ImGui::SameLine(), ImGui ::Button("Reset"))) {
@@ -44,30 +48,31 @@ void RectangleMarker::render() {
 }
 
 
-// TODO: cleaner version? 
+// TODO: cleaner version?
 done_marking RectangleMarker::markArea() {
     // TODO: the early returns are needed because what if the user holds the mouse button... idk how to make this nicer
     // for now.
     if (App::GetMode() == AppMode::State::OVERLAY) {
-        GlobalEventBus::Add(Events::ForceMode{AppMode::State::INTERACTIVE});
+        GlobalEventBus::Add(Events::ForceMode{.mode =AppMode::State::INTERACTIVE});
         return done_marking{false};
     }
+    GlobalEventBus::Add(Events::SetWindowVisibility{.isVisible = false});
 
 
     ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
 
     if (!rectMin.has_value()) {
-        if ( Mouse::IsButtonPressed( Mouse::Button::LEFT)) {
-            rectMin =  Mouse::GetPosition();
+        if (Mouse::IsButtonPressed(Mouse::Button::LEFT)) {
+            rectMin = Mouse::GetPosition();
         }
         return done_marking{false};
     }
 
-    ImGui::GetForegroundDrawList()->AddRectFilled(rectMin.value(),  Mouse::GetPosition(),
+    ImGui::GetForegroundDrawList()->AddRectFilled(rectMin.value(), Mouse::GetPosition(),
                                                   ImGui::ColorConvertFloat4ToU32({0.5, 0.5, 0.5, 0.5}));
 
     if (Mouse::IsButtonPressed(Mouse::Button::LEFT)) {
-        markedArea.Max =  Mouse::GetPosition();
+        markedArea.Max = Mouse::GetPosition();
         markedArea.Min = rectMin.value();
 
         if (markedArea.Min.x > markedArea.Max.x)
@@ -77,6 +82,7 @@ done_marking RectangleMarker::markArea() {
 
 
         GlobalEventBus::Add(Events::ReleaseModeEnforcement{});
+        GlobalEventBus::Add(Events::SetWindowVisibility{.isVisible = true});
         rectMin.reset();
         return done_marking{true};
     }

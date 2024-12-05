@@ -25,8 +25,10 @@ private:
 
 private:
     inline static bool          isRunning{true};
+    inline static bool          visible{true};
     const inline static AppMode appMode{};
     inline static ImRect        appArea;
+    inline static EventListener eventListener;
 
 
     inline static Window             window;

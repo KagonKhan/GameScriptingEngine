@@ -2,6 +2,7 @@
 
 #include "Random.hpp"
 #include "app/AssetManager.hpp"
+#include "app/events/Events.hpp"
 #include "components/interaction/ScreenImageSaver.hpp"
 #include "components/search/TemplateMatcher.hpp"
 #include "input/Mouse.hpp"
@@ -31,12 +32,12 @@ const char* WindowName(AppMode const& appMode) {
     constexpr static const char* const overlay_name{"GameScriptingEngine OVERLAY mode ###MAIN_WINDOW"};
     constexpr static const char* const interactive_name{"GameScriptingEngine INTERACTIVE mode ###MAIN_WINDOW"};
 
-    return appMode.get() == AppMode::State::INTERACTIVE? interactive_name : overlay_name;
+    return appMode.get() == AppMode::State::INTERACTIVE ? interactive_name : overlay_name;
 }
 } // namespace
 
 void App::Start() {
-
+    eventListener.listen([](Events::SetWindowVisibility const& event) { visible = event.isVisible; });
 
     // TODO: frame limiter? without image processing its ~1000 i dont want to use vsync
     while (isRunning && !glfwWindowShouldClose(window)) {
@@ -60,45 +61,40 @@ void App::Start() {
         window.endFrame();
         auto t2 = std::chrono::steady_clock::now();
     }
-
 }
 
 
 void App::Render() {
     static bool demo = false;
-
-
     ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
+
+    ImGui::PushStyleVar(ImGuiStyleVar_Alpha, visible ? 1.0f : 0.0f);
     ImGui::Begin(WindowName(appMode), &isRunning);
+    {
+        ImGui::Text("Current fps %.3f", fpsCounter.fps());
 
-    // TODO: any way to make a callback instead of writing this each frame
-    //appArea = ImGui::GetCurrentWindow()->Rect();
-    
+        RenderComponents();
+        TemporaryRender();
 
-    ImGui::Text("Current fps %.3f", fpsCounter.fps());
+        static GLImage image;
+        static cv::Mat mat = AssetManager::Retrieve("6.png");
+        if (static bool ranOnce = false; !ranOnce) {
+            image.resize({static_cast<float>(mat.cols), static_cast<float>(mat.rows)});
+            cv::Mat fmat;
+            cv::flip(mat, fmat, 0);
+            image.setData(fmat);
+            ranOnce = true;
+        }
+        ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), {800, 600}, ImVec2(0, 1),
+                     ImVec2(1, 0));
 
-    RenderComponents();
-    TemporaryRender();
-
-    static GLImage image;
-    static cv::Mat mat = AssetManager::Retrieve("6.png");
-    if (static bool ranOnce = false; !ranOnce) {
-        image.resize({static_cast<float>(mat.cols), static_cast<float>(mat.rows)});
-        cv::Mat fmat;
-        cv::flip(mat, fmat, 0);
-        image.setData(fmat);
-        ranOnce = true;
+        ImGui::Separator();
+        ImGui::Checkbox("Demo", &demo);
+        if (demo)
+            ImGui::ShowDemoWindow();
     }
-    ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), {800, 600}, ImVec2(0, 1),
-                 ImVec2(1, 0));
-
-    ImGui::Separator();
-    ImGui::Checkbox("Demo", &demo);
-    if (demo)
-        ImGui::ShowDemoWindow();
-
-
     ImGui::End();
+    ImGui::PopStyleVar();
 }
 
 

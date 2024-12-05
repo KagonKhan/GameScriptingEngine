@@ -7,4 +7,8 @@ struct ForceMode {
     AppMode::State mode;
 };
 struct ReleaseModeEnforcement {};
+
+struct SetWindowVisibility {
+    bool isVisible;
+};
 } // namespace Events
