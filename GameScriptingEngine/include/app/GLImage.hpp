@@ -1,6 +1,6 @@
 #pragma once
-#include "ImGui/imgui.h"
-
+#include <GLAD/GLAD.h>
+#include <ImGui/imgui.h>
 #include <opencv2/opencv.hpp>
 
 
@@ -9,13 +9,14 @@ public:
     GLImage();
     ~GLImage();
 
-    void setData(const int* data, cv::Mat image = {}) const;
+    void setData(const int* data) const;
+    void setData(cv::Mat const& image) const;
     void resize(ImVec2 newSize);
 
-    unsigned int getID() const { return texture; }
-    ImVec2       getSize() const { return size; }
+    GLuint getID() const { return texture; }
+    ImVec2 getSize() const { return size; }
 
 private:
-    unsigned int texture;
-    ImVec2       size;
+    GLuint texture;
+    ImVec2 size;
 };

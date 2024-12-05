@@ -14,7 +14,6 @@
 // TODO: event library - threading? Will use event bus for now.
 // TODO: optimize conan file especially opencv module
  int main() {
-     cv::redirectError(dummy_error_handler);
      AssetManager::ReadAll();
 
      initialize();

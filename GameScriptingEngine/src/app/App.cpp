@@ -86,7 +86,7 @@ void App::Render() {
         image.resize({static_cast<float>(mat.cols), static_cast<float>(mat.rows)});
         cv::Mat fmat;
         cv::flip(mat, fmat, 0);
-        image.setData(reinterpret_cast<const int*>(fmat.data), fmat);
+        image.setData(fmat);
         ranOnce = true;
     }
     ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), {800, 600}, ImVec2(0, 1),
