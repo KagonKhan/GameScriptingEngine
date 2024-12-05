@@ -4,7 +4,8 @@
 #include "ImGui/imgui_impl_opengl3.h"
 #include "ImGui/imgui_impl_glfw.h"
 
-
+#include "ImGui/implot.h"
+#include "ImGui/implot_internal.h"
 
 #include <spdlog/spdlog.h>
 #include <stdexcept>
@@ -27,6 +28,7 @@ Window::Window() {
 Window::~Window() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
 
     glfwDestroyWindow(window);
@@ -103,6 +105,7 @@ void Window::setupImGui() {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     (void) io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls

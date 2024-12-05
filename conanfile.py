@@ -20,6 +20,8 @@ class GSEconan(ConanFile):
         self.requires("magic_enum/0.9.7")
         self.requires("opencv/4.10.0" )
 
+        
+
 
     def build_requirements(self):
         self.test_requires = "gtest/1.15.0" 

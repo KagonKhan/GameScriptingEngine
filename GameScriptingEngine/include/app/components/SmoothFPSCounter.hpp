@@ -1,13 +1,17 @@
 #pragma once
+#include "ImGui/imgui.h"
+
 #include <chrono>
 #include <valarray>
 
- class SmoothFPSCounter {
+class SmoothFPSCounter {
 public:
-     explicit SmoothFPSCounter(int count);
+    explicit SmoothFPSCounter(int count);
 
     [[nodiscard]] float fps() const;
-     void                measure();
+    void                measure();
+    void                plot() { ImGui::PlotLines("Frame Times", &measurements[0], count);
+    }
 
 
 private:

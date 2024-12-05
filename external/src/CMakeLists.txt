@@ -9,6 +9,10 @@ add_library(ImGui
     "ImGui/imgui_tables.cpp"
     "ImGui/imgui_widgets.cpp"
     "ImGui/imgui_stdlib.cpp"
+    
+    "ImGui/implot.cpp"
+    "ImGui/implot_demo.cpp"
+    "ImGui/implot_items.cpp"
 )
 
 

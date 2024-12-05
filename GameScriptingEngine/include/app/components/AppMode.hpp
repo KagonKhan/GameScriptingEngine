@@ -21,7 +21,10 @@ public:
     ~AppMode();
 
 
-    [[nodiscard]] State get() const { return lockedState.value_or(checkState()); }
+    [[nodiscard]] State get() const {
+        return State::INTERACTIVE;
+        lockedState.value_or(checkState());
+    }
 
 private:
     [[nodiscard]] State checkState() const {
