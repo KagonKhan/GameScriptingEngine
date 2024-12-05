@@ -56,17 +56,17 @@ done_marking RectangleMarker::markArea() {
     ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
 
     if (!rectMin.has_value()) {
-        if (Input::Mouse::IsButtonPressed(Input::Mouse::BUTTON::LEFT)) {
-            rectMin = Input::Mouse::GetPosition();
+        if ( Mouse::IsButtonPressed( Mouse::Button::LEFT)) {
+            rectMin =  Mouse::GetPosition();
         }
         return done_marking{false};
     }
 
-    ImGui::GetForegroundDrawList()->AddRectFilled(rectMin.value(), Input::Mouse::GetPosition(),
+    ImGui::GetForegroundDrawList()->AddRectFilled(rectMin.value(),  Mouse::GetPosition(),
                                                   ImGui::ColorConvertFloat4ToU32({0.5, 0.5, 0.5, 0.5}));
 
-    if (Input::Mouse::IsButtonPressed(Input::Mouse::BUTTON::LEFT)) {
-        markedArea.Max = Input::Mouse::GetPosition();
+    if (Mouse::IsButtonPressed(Mouse::Button::LEFT)) {
+        markedArea.Max =  Mouse::GetPosition();
         markedArea.Min = rectMin.value();
 
         if (markedArea.Min.x > markedArea.Max.x)

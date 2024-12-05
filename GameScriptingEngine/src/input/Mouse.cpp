@@ -3,7 +3,6 @@
 #include <Windows.h>
 #include <magic_enum/magic_enum.hpp>
 #include <spdlog/spdlog.h>
-using namespace Input;
 
 namespace {
 namespace EVENTS {
@@ -24,15 +23,7 @@ const INPUT RMB_PRESS    = {.type = INPUT_MOUSE, .mi = EVENTS::RMB_DOWN};
 const INPUT RMB_RELEASE  = {.type = INPUT_MOUSE, .mi = EVENTS::RMB_UP};
 INPUT       RMB_CLICK[2] = {RMB_PRESS, RMB_RELEASE};
 } // namespace INPUTS
-
-
-inline std::unordered_map<Mouse::BUTTON, bool> WAS_BUTTON_PRESSED{
-    {Mouse::BUTTON::LEFT, false},
-    {Mouse::BUTTON::RIGHT, false},
-    {Mouse::BUTTON::MIDDLE, false},
-};
 } // namespace
-
 
 ImVec2 Mouse::GetPosition() {
     POINT point;
@@ -40,7 +31,7 @@ ImVec2 Mouse::GetPosition() {
     return {static_cast<float>(point.x), static_cast<float>(point.y)};
 }
 
-bool Mouse::IsButtonPressed(const BUTTON button) {
+bool Mouse::IsButtonPressed(const Button button) {
     const bool is_on  = GetAsyncKeyState(magic_enum::enum_integer(button)) & 0x8000;
     const bool was_on = std::exchange(WAS_BUTTON_PRESSED[button], is_on);
 
@@ -60,3 +51,5 @@ bool Mouse::Click() {
 }
 
 bool Mouse::Click(const ImVec2 mouse_position) { return false; }
+
+void Mouse::MouseMoveCallback(ImVec2 position) { spdlog::critical("Mouse position ({}, {})", position.x, position.y); }

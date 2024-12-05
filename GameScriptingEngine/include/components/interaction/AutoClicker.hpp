@@ -28,8 +28,8 @@ private:
     void stopClicking();
 
 private:
-    std::thread          clicker;
-    std::atomic<bool>    isRunning;
-    Input::Keyboard::KEY keybind{Input::Keyboard::KEY::Q};
-    Interval             interval;
+    std::thread       clicker;
+    std::atomic<bool> isRunning;
+    Keyboard::KEY     keybind{Keyboard::KEY::Q};
+    Interval          interval;
 };

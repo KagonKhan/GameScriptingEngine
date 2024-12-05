@@ -12,7 +12,7 @@
 
 
 AutoClicker::AutoClicker() {
-    Input::Keyboard::AddKeybind(keybind, [this] { isRunning ? stopClicking() : startClicking(); });
+    Keyboard::AddKeybind(keybind, [this] { isRunning ? stopClicking() : startClicking(); });
 }
 
 AutoClicker::~AutoClicker() { stopClicking(); }
@@ -33,14 +33,14 @@ void AutoClicker::render() {
 void AutoClicker::keybindWidget() {
     ImGui::SetCursorScreenPos(ImGui::GetCursorScreenPos() + ImVec2(20, 0));
 
-    const std::string current_preview = Input::Keyboard::KeyName(keybind);
+    const std::string current_preview = Keyboard::KeyName(keybind);
     if (ImGui::BeginCombo("Keybind", current_preview.c_str(), ImGuiComboFlags_WidthFitPreview)) {
-        for (const auto& key : magic_enum::enum_entries<Input::Keyboard::KEY>() | std::views::keys) {
+        for (const auto& key : magic_enum::enum_entries<Keyboard::KEY>() | std::views::keys) {
             const bool is_selected = key == keybind;
-            if (ImGui::Selectable(Input::Keyboard::KeyName(key).c_str(), is_selected)) {
-                Input::Keyboard::RemoveKeybind(keybind);
+            if (ImGui::Selectable(Keyboard::KeyName(key).c_str(), is_selected)) {
+                Keyboard::RemoveKeybind(keybind);
                 keybind = key;
-                Input::Keyboard::AddKeybind(keybind, [this] { isRunning ? stopClicking() : startClicking(); });
+                Keyboard::AddKeybind(keybind, [this] { isRunning ? stopClicking() : startClicking(); });
             }
 
             if (is_selected) {
@@ -85,7 +85,7 @@ void AutoClicker::startClicking() {
     spdlog::debug("{} started clicking.", TAG);
     clicker = std::thread([this] {
         while (isRunning) {
-            Input::Mouse::Click();
+            Mouse::Click();
             std::this_thread::sleep_for(interval.asMicroseconds());
         }
     });

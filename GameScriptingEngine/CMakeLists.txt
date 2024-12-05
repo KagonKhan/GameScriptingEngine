@@ -11,11 +11,15 @@ add_executable (GameScriptingEngine
     "main.cpp" 
 
     "include/Utils.hpp"
+    "src/Random.cpp"
+
     
     "src/app/App.cpp"
     "src/app/SmoothFPSCounter.cpp"
     "src/app/Window.cpp"
     "src/app/GLImage.cpp"
+    "src/app/AssetManager.cpp"
+    "src/app/EventDispatcher.cpp"
 
     "src/components/MonitorPixelReader.cpp"
 
@@ -28,12 +32,13 @@ add_executable (GameScriptingEngine
     
     "src/components/ai/ai.cpp" 
 
+    
     "src/input/InputListener.cpp"
     "src/input/Keyboard.cpp"
     "src/input/Mouse.cpp"
 
 
- "src/app/AssetManager.cpp")
+)
 
 
 
@@ -61,6 +66,7 @@ target_link_libraries(GameScriptingEngine
 
     PUBLIC ImGui
     PUBLIC GLAD
+    PUBLIC EventBus
 
 )
 

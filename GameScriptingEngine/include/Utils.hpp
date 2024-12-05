@@ -21,45 +21,6 @@ struct Interval {
     }
 };
 
-
-class Random {
-public:
-    static void     Init() { s_RandomEngine.seed(std::random_device()()); }
-    static uint32_t UInt() { return s_Distribution(s_RandomEngine); }
-    static uint32_t UInt(const uint32_t min, const uint32_t max) {
-        return min + (s_Distribution(s_RandomEngine) % (max - min + 1));
-    }
-
-    static float UnitFloat() {
-        return static_cast<float>(s_Distribution(s_RandomEngine)) /
-               static_cast<float>(std::numeric_limits<uint32_t>::max());
-    }
-
-    static double Double() { return s_Distribution(s_RandomEngine) / std::numeric_limits<uint32_t>::max(); }
-
-
-    // static glm::vec3 Vec3() { return glm::vec3(Float(), Float(), Float()); }
-    // static glm::vec3 Vec3(float min, float max) {
-    //     return glm::vec3(Float() * (max - min) + min, Float() * (max - min) + min, Float() * (max - min) + min);
-    // }
-
-
-    static uint32_t PCG_Hash(const uint32_t input) {
-        uint32_t state = input * 747796405u + 2891336453u;
-        uint32_t word  = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
-        return (word >> 22u) ^ word;
-    }
-
-    static float RandomFloatPCG(uint32_t& seed) {
-        seed = PCG_Hash(seed);
-        return static_cast<float>(seed) / static_cast<float>(std::numeric_limits<uint32_t>::max());
-    }
-
-private:
-    inline static thread_local std::mt19937                                             s_RandomEngine;
-    inline static thread_local std::uniform_int_distribution<std::mt19937::result_type> s_Distribution;
-};
-
 namespace Utils {
 using timepoint = std::chrono::steady_clock::time_point;
 
@@ -75,3 +36,21 @@ inline long long duration_ns(timepoint const& t1, timepoint const& t2) {
     return std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count();
 }
 } // namespace Utils
+
+
+struct NonCopyable {
+    NonCopyable()                              = default;
+    ~NonCopyable()                             = default;
+    NonCopyable(NonCopyable const&)            = delete;
+    NonCopyable& operator=(NonCopyable const&) = delete;
+    NonCopyable(NonCopyable&&)                 = default;
+    NonCopyable& operator=(NonCopyable&&)      = default;
+};
+struct NonMovable {
+    NonMovable()                             = default;
+    ~NonMovable()                            = default;
+    NonMovable(NonMovable const&)            = delete;
+    NonMovable& operator=(NonMovable const&) = delete;
+    NonMovable(NonMovable&&)                 = delete;
+    NonMovable& operator=(NonMovable&&)      = delete;
+};

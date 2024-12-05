@@ -7,12 +7,13 @@
 #include <string>
 #include <unordered_map>
 
-// File watcher / dir watcher?
+// File watcher / dir watcher? Can use C++ or WinAPI. C++ might be enough.
 // https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstchangenotificationa Memory pool /
 // arena what's the best data type to hold these... cv::Mat for now. class for AssetImage?
 enum class Asset : int {
 
 };
+
 
 
 class AssetManager {
@@ -27,7 +28,6 @@ public:
 
         for (auto const& file : std::filesystem::directory_iterator{path}) {
             const std::string filename = file.path().filename().string();
-            spdlog::critical("Reading file {} with path {}", filename, file.path().string());
 
             if (images.contains(filename))
                 continue;
@@ -38,7 +38,6 @@ public:
 
     static void Add(std::string const& name, std::filesystem::path const& path) {
         cv::Mat mat = cv::imread(path.string());
-        spdlog::critical("Image info: channels {}, depth {}", mat.channels(), mat.depth());
         images.emplace(name, mat);
     }
 

@@ -15,6 +15,7 @@ add_library(ImGui
 
 find_package(GLFW3 REQUIRED)
 target_link_libraries(ImGui glfw)
+
 target_include_directories(ImGui
     PUBLIC ../include/
     PRIVATE ../include/ImGui
@@ -30,4 +31,22 @@ add_library(GLAD
 target_include_directories(GLAD
     PUBLIC ../include/
     PRIVATE ../include/GLAD
+)
+
+
+
+# =============================    EventBus    =============================
+
+add_library(EventBus
+    "EventBus/EventBus.cpp"
+    "EventBus/PassPerk.cpp"
+    "EventBus/PerkEventBus.cpp"
+    "EventBus/TagPerk.cpp"
+    "EventBus/WaitPerk.cpp"
+)
+
+target_include_directories(EventBus
+    PUBLIC ../include
+    PRIVATE ../include/EventBus
+    PRIVATE ../include/EventBus/dexode
 )

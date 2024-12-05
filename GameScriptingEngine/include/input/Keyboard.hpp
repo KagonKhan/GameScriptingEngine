@@ -1,13 +1,15 @@
 #pragma once
-#include "magic_enum/magic_enum.hpp"
+
+#include "InputListener.hpp"
 
 #include <functional>
+#include <magic_enum/magic_enum.hpp>
 #include <string>
-#include <unordered_map>
-#include <input/InputListener.hpp>
 
-namespace Input {
 class Keyboard {
+private:
+    inline static constexpr char const* const TAG{"[Keyboard]"};
+
 public:
     // TODO: a way to retrieve unused keybinds, and a descriptor where a keybind is assigned?
     // A screen / window for all keybinds? Like in games?
@@ -33,21 +35,18 @@ public:
         LEFT_CONTROL = 0xA2,
     };
 
-    static std::string KeyName(KEY pressed_button);
-    static bool        AddKeybind(KEY key, std::function<void()>&& action);
-    static bool        RemoveKeybind(KEY key);
+    [[nodiscard]] static bool        AddKeybind(KEY key, std::function<void()>&& action);
+    [[nodiscard]] static bool        RemoveKeybind(KEY key);
+    [[nodiscard]] static std::string KeyName(KEY pressed_button);
 
 private:
-    static void KeyPressedCallback(int key_code, int action);
+    static void KeyPressedCallback(const int key_code, const int action);
 
 private:
     inline static std::unordered_map<KEY, std::function<void()>> keybinds{magic_enum::enum_count<KEY>()};
 
-    // TODO: clunky af, what cleaner way can I auto-initialize this?
-    inline static bool subscribed = []{
-        static InputListener input_listener;
-        InputListener::SubscribeKeyPress(KeyPressedCallback);
-        return true;
+    // TODO: how to avoid this
+    [[maybe_unused]] inline static bool subscribed = [] {
+        return InputListener::SubscribeKeyPress(KeyPressedCallback);
     }();
 };
-} // namespace Input

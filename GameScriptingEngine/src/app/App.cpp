@@ -1,8 +1,10 @@
 #include "app/App.hpp"
 
+#include "Random.hpp"
 #include "app/AssetManager.hpp"
 #include "components/interaction/ScreenImageSaver.hpp"
 #include "components/search/TemplateMatcher.hpp"
+#include "input/Mouse.hpp"
 
 #include <GLFW/glfw3.h>
 #include <ImGui/imgui.h>
@@ -34,8 +36,6 @@ const char* windowName(bool isOverlayMode) {
 } // namespace
 
 void App::Start() {
-    Input::Keyboard::AddKeybind(Input::Keyboard::KEY::LEFT_CONTROL, [&] { overlayEnabled = !overlayEnabled; });
-    Random::Init();
 
     // TODO: frame limiter? without image processing its ~1000 i dont want to use vsync
     while (isRunning && !glfwWindowShouldClose(window)) {
@@ -44,7 +44,8 @@ void App::Start() {
 
         glfwPollEvents();
 
-        // TODO: convert it to be automatic, save the window rect, and detect mouse position. If inside - non overlay
+        // TODO: convert it to be automatic, save the window rect,
+        // and detect mouse position. If inside - non overlay
         if (overlayEnabled) {
             ImGui::GetMainViewport()->Flags |= ImGuiViewportFlags_NoInputs;
         }
@@ -58,7 +59,6 @@ void App::Start() {
         auto t2 = std::chrono::steady_clock::now();
     }
 
-    Input::Keyboard::RemoveKeybind(Input::Keyboard::KEY::Q);
 }
 
 
@@ -66,6 +66,12 @@ void App::Render() {
     static bool demo = false;
 
     ImGui::Begin(windowName(overlayEnabled), &isRunning);
+
+    // TODO: any way to make a callback instead of writing this each frame
+    appArea = ImGui::GetCurrentWindow()->Rect();
+    
+    overlayEnabled = !appArea.Contains(Mouse::GetPosition());
+
     ImGui::Text("Current fps %.3f", fpsCounter.fps());
 
     RenderComponents();
@@ -78,7 +84,6 @@ void App::Render() {
         cv::Mat fmat;
         cv::flip(mat, fmat, 0);
         image.setData(reinterpret_cast<const int*>(fmat.data), fmat);
-        spdlog::critical("step: {}", (fmat.step & 3 )? 1 : 4 );
         ranOnce = true;
     }
     ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), {800, 600}, ImVec2(0, 1),
