@@ -7,6 +7,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include "app/events/Events.hpp"
+
 
 namespace {
 using done_marking = bool;
@@ -46,9 +48,8 @@ void RectangleMarker::render() {
 done_marking RectangleMarker::markArea() {
     // TODO: the early returns are needed because what if the user holds the mouse button... idk how to make this nicer
     // for now.
-    if (App::IsOverlayMode()) {
-        spdlog::debug("{} Overlay was turned on, turning off for marking", TAG);
-        App::FlipMode();
+    if (App::GetMode() == AppMode::State::OVERLAY) {
+        GlobalEventBus::Add(Events::ForceMode{AppMode::State::INTERACTIVE});
         return done_marking{false};
     }
 
@@ -75,6 +76,7 @@ done_marking RectangleMarker::markArea() {
             std::swap(markedArea.Min.y, markedArea.Max.y);
 
 
+        GlobalEventBus::Add(Events::ReleaseModeEnforcement{});
         rectMin.reset();
         return done_marking{true};
     }

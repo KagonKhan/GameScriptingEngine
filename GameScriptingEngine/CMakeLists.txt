@@ -10,28 +10,35 @@
 add_executable (GameScriptingEngine
     "main.cpp" 
 
+   
     "include/Utils.hpp"
+    "include/app/events/Events.hpp"
+ 
     "src/Random.cpp"
-
+ 
     
     "src/app/App.cpp"
-    "src/app/SmoothFPSCounter.cpp"
+    "src/app/components/AppMode.cpp"
+    "src/app/components/SmoothFPSCounter.cpp"
+ 
     "src/app/Window.cpp"
     "src/app/GLImage.cpp"
     "src/app/AssetManager.cpp"
-    "src/app/EventDispatcher.cpp"
-
+    
+    "src/app/events/GlobalEventDispatcher.cpp"
+    "src/app/events/EventListener.cpp"
+ 
     "src/components/MonitorPixelReader.cpp"
-
+ 
     "src/components/interaction/AutoClicker.cpp"
     "src/components/interaction/RectangleMarker.cpp"
     "src/components/interaction/ActionRecorder.cpp"
     "src/components/interaction/ScreenImageSaver.cpp"
-
+ 
     "src/components/search/TemplateMatcher.cpp"
     
     "src/components/ai/ai.cpp" 
-
+ 
     
     "src/input/InputListener.cpp"
     "src/input/Keyboard.cpp"
@@ -64,9 +71,9 @@ target_link_libraries(GameScriptingEngine
     PUBLIC magic_enum::magic_enum
     PUBLIC opencv::opencv
 
-    PUBLIC ImGui
-    PUBLIC GLAD
-    PUBLIC EventBus
+    PRIVATE ImGui
+    PRIVATE GLAD
+    PRIVATE EventBus
 
 )
 

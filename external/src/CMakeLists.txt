@@ -46,7 +46,10 @@ add_library(EventBus
 )
 
 target_include_directories(EventBus
-    PUBLIC ../include
+    PUBLIC ../include/Listener.hpp
+    PUBLIC ../include/EventBus.hpp
+    PUBLIC ../include/Bus.hpp
+
     PRIVATE ../include/EventBus
     PRIVATE ../include/EventBus/dexode
 )

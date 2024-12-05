@@ -1,4 +1,4 @@
-#include "app/SmoothFPSCounter.hpp"
+#include "app/components/SmoothFPSCounter.hpp"
 
 #include <chrono>
 

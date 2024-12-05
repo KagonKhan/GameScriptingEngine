@@ -3,8 +3,8 @@
 //
 #pragma once
 
-#include "dexode/EventStream.hpp"
-#include "dexode/event_id.hpp"
+#include "EventStream.hpp"
+#include "event_id.hpp"
 
 #include <functional>
 

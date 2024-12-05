@@ -1,8 +1,8 @@
 #pragma once
-#include "ImGui/imgui.h"
-#include "SmoothFPSCounter.hpp"
 #include "Window.hpp"
+#include "components/AppMode.hpp"
 #include "components/MonitorPixelReader.hpp"
+#include "components/SmoothFPSCounter.hpp"
 #include "components/interaction/AutoClicker.hpp"
 #include "components/interaction/RectangleMarker.hpp"
 
@@ -10,8 +10,12 @@
 // instead of using static `flip mode`,
 // maybe use event dispatch
 class App {
+private:
+    static constexpr char const* const TAG{"[App]"};
+
 public:
-    static void Start();
+    static AppMode::State GetMode() { return appMode.get(); }
+    static void           Start();
 
 private:
     static void Render();
@@ -20,10 +24,9 @@ private:
     static void TemporaryRender();
 
 private:
-    inline static bool isRunning{true};
-    // OVERLAY MODE = INTERACTIONS - CANNOT DRAW. INPUT MODE = CAN DRAW ON THE SCREEN.
-    inline static bool   overlayEnabled{true};
-    inline static ImRect appArea;
+    inline static bool          isRunning{true};
+    const inline static AppMode appMode{};
+    inline static ImRect        appArea;
 
 
     inline static Window             window;

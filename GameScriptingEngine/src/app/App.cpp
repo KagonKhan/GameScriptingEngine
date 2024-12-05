@@ -27,15 +27,16 @@ auto fix_monitor_dpi_differences = [windowDPI = 0.0f]() mutable {
     }
 };
 
-const char* windowName(bool isOverlayMode) {
+const char* WindowName(AppMode const& appMode) {
     constexpr static const char* const overlay_name{"GameScriptingEngine OVERLAY mode ###MAIN_WINDOW"};
-    constexpr static const char* const input_name{"GameScriptingEngine INPUT mode ###MAIN_WINDOW"};
+    constexpr static const char* const interactive_name{"GameScriptingEngine INTERACTIVE mode ###MAIN_WINDOW"};
 
-    return isOverlayMode ? overlay_name : input_name;
+    return appMode.get() == AppMode::State::INTERACTIVE? interactive_name : overlay_name;
 }
 } // namespace
 
 void App::Start() {
+
 
     // TODO: frame limiter? without image processing its ~1000 i dont want to use vsync
     while (isRunning && !glfwWindowShouldClose(window)) {
@@ -43,10 +44,11 @@ void App::Start() {
 
 
         glfwPollEvents();
+        GlobalEventBus::Process();
 
         // TODO: convert it to be automatic, save the window rect,
         // and detect mouse position. If inside - non overlay
-        if (overlayEnabled) {
+        if (appMode.get() == AppMode::State::OVERLAY) {
             ImGui::GetMainViewport()->Flags |= ImGuiViewportFlags_NoInputs;
         }
         fix_monitor_dpi_differences();
@@ -65,12 +67,13 @@ void App::Start() {
 void App::Render() {
     static bool demo = false;
 
-    ImGui::Begin(windowName(overlayEnabled), &isRunning);
+
+    ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
+    ImGui::Begin(WindowName(appMode), &isRunning);
 
     // TODO: any way to make a callback instead of writing this each frame
-    appArea = ImGui::GetCurrentWindow()->Rect();
+    //appArea = ImGui::GetCurrentWindow()->Rect();
     
-    overlayEnabled = !appArea.Contains(Mouse::GetPosition());
 
     ImGui::Text("Current fps %.3f", fpsCounter.fps());
 
