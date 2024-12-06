@@ -35,5 +35,5 @@ private:
     inline static AutoClicker        clicker;
     inline static RectangleMarker    areaMarker;
     inline static MonitorPixelReader reader;
-    inline static SmoothedFPSCounter   fpsCounter{10};
+    inline static SmoothedFPSCounter fpsCounter;
 };

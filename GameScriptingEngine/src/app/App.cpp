@@ -76,7 +76,8 @@ void App::Render() {
     ImGui::Begin(WindowName(appMode), &isRunning);
     {
 
-        ImGui::Text("Current fps %.3f", fpsCounter.widget());
+        fpsCounter.widget();
+        fpsCounter.plot();
 
         RenderComponents();
         TemporaryRender();

@@ -1,17 +1,16 @@
 #include "input/InputListener.hpp"
 
+#include "app/Exceptions.hpp"
+
 #include <Windows.h>
 #include <functional>
 #include <spdlog/spdlog.h>
 
-#include "app/Exceptions.hpp"
-
 
 void InputListener::Initialize() {
     spdlog::debug("{} Constructor", TAG);
-    HINSTANCE hInstance = nullptr;//GetModuleHandle(nullptr);
+    HINSTANCE hInstance = GetModuleHandle(nullptr);
     if (!hInstance) {
-        spdlog::critical("wtf broski");
         throw OSHookError("{} Could not get instance handle!", TAG);
     }
     keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInstance, 0);

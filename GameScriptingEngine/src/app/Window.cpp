@@ -90,7 +90,7 @@ void Window::setupGLFWWindow() {
 
     
     glfwMakeContextCurrent(window);
-    //glfwSwapInterval(1);
+    glfwSwapInterval(1);
 
     int version = gladLoadGL(glfwGetProcAddress);
     if (version == 0) {

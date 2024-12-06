@@ -4,6 +4,7 @@
 #include "Utils.hpp"
 
 #include <chrono>
+#include <spdlog/spdlog.h>
 
 // utility structure for realtime plot
 
@@ -11,32 +12,31 @@
 void Demo_RealtimePlots(float fps) {}
 
 void SmoothedFPSCounter::measure() {
-    lastTime                            = std::exchange(currTime, Utils::now());
-    dtMeasurements[currentIndex++ % 10] = static_cast<float>(Utils::duration_ms(currTime, lastTime));
-    averageFPS                          = measurementsCount / dtMeasurements.sum();
+    lastTime                       = std::exchange(currTime, Utils::now());
+    dtMeasurements[currentIndex++] = static_cast<float>(Utils::duration_us(lastTime, currTime));
+    if (currentIndex >= count) {
+        averageFPS     = count * 1'000'000.f / dtMeasurements.sum();
+        dtMeasurements = currentIndex = 0;
+    }
+    plotBuffer.add(averageFPS);
 }
 void SmoothedFPSCounter::widget() const { ImGui::Text("Current fps %.3f", averageFPS); }
 
 
 void SmoothedFPSCounter::plot() const {
-    static ScrollingBuffer sdata2;
-    static float           t = 0;
+    ImPlot::PushStyleColor(ImPlotCol_FrameBg, {0, 0, 0, 0});
 
-    t += ImGui::GetIO().DeltaTime;
+    if (ImPlot::BeginPlot("##Scrolling", ImVec2(400, 100), 63)) {
+        ImPlot::SetupAxes(nullptr, nullptr, 49423, 49410);
 
-    sdata2.AddPoint(t, fps);
+        ImPlot::SetupAxisLimits(ImAxis_X1, plotBuffer.t - 5.0f, plotBuffer.t, ImGuiCond_Always);
+        ImPlot::SetupAxisLimits(ImAxis_Y1, 1.0f, 150.0f, ImGuiCond_Always);
 
-    static float history = 10.0f;
+        ImPlot::PlotLine<float>("##FPS", &plotBuffer.data[0].x, &plotBuffer.data[0].y, plotBuffer.count, 0, plotBuffer.currentIndex,
+                               2 * sizeof(float));
 
-
-    if (ImPlot::BeginPlot("FPS graph", ImVec2(-1, 150))) {
-        ImPlot::SetupAxes("time", "f ps");
-        ImPlot::SetupAxisLimits(ImAxis_X1, t - history, t, ImGuiCond_Always);
-        ImPlot::SetupAxisLimits(ImAxis_Y1, averageFPS * 0.5f, averageFPS * 2.0f);
-        ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 0.5f);
-
-        ImPlot::PlotLine("FPS", &sdata2.Data[0].x, &sdata2.Data[0].y, sdata2.Data.size(), 0, sdata2.Offset,
-                         2 * sizeof(float));
         ImPlot::EndPlot();
     }
+
+    ImPlot::PopStyleColor();
 }

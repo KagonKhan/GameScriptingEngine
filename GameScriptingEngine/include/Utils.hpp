@@ -26,6 +26,20 @@ using timepoint = std::chrono::steady_clock::time_point;
 
 inline timepoint now() { return std::chrono::steady_clock::now(); }
 
+// TODO: add concept for duration
+template <typename Duration> inline std::chrono::milliseconds to_ms(Duration const& d) {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(d);
+}
+template <typename Duration> inline std::chrono::microseconds to_us(Duration const& d) {
+    return std::chrono::duration_cast<std::chrono::microseconds>(d);
+}
+template <typename Duration> inline std::chrono::nanoseconds to_ns(Duration const& d) {
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(d);
+}
+
+inline long long duration_s(timepoint const& t1, timepoint const& t2) {
+    return std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count();
+}
 inline long long duration_ms(timepoint const& t1, timepoint const& t2) {
     return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 }
