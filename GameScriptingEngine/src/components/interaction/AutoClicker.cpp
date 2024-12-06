@@ -20,14 +20,18 @@ AutoClicker::~AutoClicker() { stopClicking(); }
 void AutoClicker::render() {
     // TODO: make this prettier without so much stupid code - YouTube tutorials on DearImGui style or something
 
+
+    ImGui::Checkbox("AutoClicker", &isVisible);
+
+    if (!isVisible)
+        return;
+
     keybindWidget();
     intervalWidget();
 
 
     ImGui::SetCursorScreenPos(ImGui::GetCursorScreenPos() + ImVec2(20, 0));
     ImGui::Text("Current period in ms: {%lld}", interval.asMicroseconds().count());
-
-    ImGui::Separator();
 }
 
 void AutoClicker::keybindWidget() {

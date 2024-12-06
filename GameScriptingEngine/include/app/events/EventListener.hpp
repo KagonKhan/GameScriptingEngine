@@ -1,5 +1,4 @@
 #pragma once
-#include "EventBus/EventBus.hpp"
 #include "EventBus/Listener.hpp"
 #include "GlobalEventBus.hpp"
 

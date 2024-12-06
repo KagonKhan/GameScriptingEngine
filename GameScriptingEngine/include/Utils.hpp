@@ -1,4 +1,6 @@
 #pragma once
+#include "ImGui/imgui.h"
+
 #include <algorithm>
 #include <chrono>
 #include <random>

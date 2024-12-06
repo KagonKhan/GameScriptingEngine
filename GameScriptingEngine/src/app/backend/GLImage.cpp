@@ -1,4 +1,4 @@
-#include "app/GLImage.hpp"
+#include "app/backend/GLImage.hpp"
 
 #include <GLAD/GLAD.h>
 

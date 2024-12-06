@@ -7,7 +7,7 @@
 #include <spdlog/spdlog.h>
 
 
-class AppMode : NonMovable {
+class AppMode {
 private:
     static constexpr char const* const TAG{"[AppMode]"};
 
@@ -17,28 +17,15 @@ public:
         INTERACTIVE = 1,
     };
 
-    AppMode();
-    ~AppMode();
-
-
-    [[nodiscard]] State get() const {
-        return State::INTERACTIVE;
-        lockedState.value_or(checkState());
-    }
+    [[nodiscard]] static State get() { return lockedState.value_or(checkState()); }
 
 private:
-    [[nodiscard]] State checkState() const {
-        // TODO: in case this ever grows = have a library of names?
-        if (ImGuiWindow* main_window = ImGui::FindWindowByName("###MAIN_WINDOW"); main_window != nullptr) {
-            return static_cast<State>(main_window->Rect().Contains(Mouse::GetPosition()));
-        }
-
-        spdlog::critical("{} Cannot locate main window", TAG);
-        return State::INTERACTIVE;
-    }
+    [[nodiscard]] static State checkState();
+    [[nodiscard]] static bool initializer();
 
     // TODO: convert to static?
-    // TODO: not very satisfied with the locking. Any other ideas?
-    EventListener        eventListener;
-    std::optional<State> lockedState{std::nullopt};
+    inline static EventListener        eventListener;
+    inline static std::optional<State> lockedState{std::nullopt};
+    inline static bool                 initialized = initializer();
+
 };

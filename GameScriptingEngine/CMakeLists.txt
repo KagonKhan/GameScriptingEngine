@@ -12,22 +12,26 @@ add_executable (GameScriptingEngine
 
    
     "include/Utils.hpp"
-    "include/app/events/Events.hpp"
+    
     "include/app/Exceptions.hpp"
+    
+    "include/app/backend/Window.hpp"
+    
+    "include/app/events/Events.hpp"
+    "include/app/events/GlobalEventBus.hpp"
+    "include/app/events/EventListener.hpp"
  
     "src/Random.cpp"
  
     
     "src/app/App.cpp"
+    "src/app/AssetManager.cpp"
     "src/app/components/AppMode.cpp"
     "src/app/components/SmoothedFPSCounter.cpp"
  
-    "src/app/Window.cpp"
-    "src/app/GLImage.cpp"
-    "src/app/AssetManager.cpp"
+    "src/app/backend/GLImage.cpp"
+    "src/app/backend/WindowContext.cpp"
     
-    "src/app/events/GlobalEventDispatcher.cpp"
-    "src/app/events/EventListener.cpp"
  
     "src/components/MonitorPixelReader.cpp"
  
@@ -45,8 +49,7 @@ add_executable (GameScriptingEngine
     "src/input/Keyboard.cpp"
     "src/input/Mouse.cpp"
 
-
-)
+ "src/app/backend/Window.cpp")
 
 
 

@@ -46,7 +46,7 @@ private:
     inline static std::unordered_map<KEY, std::function<void()>> keybinds{magic_enum::enum_count<KEY>()};
 
     // TODO: how to avoid this
-    [[maybe_unused]] inline static bool subscribed = [] {
+    inline static bool subscribed = [] {
         return InputListener::SubscribeKeyPress(KeyPressedCallback);
     }();
 };

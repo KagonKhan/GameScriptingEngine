@@ -14,3 +14,8 @@ template <exception_type Exception> struct FormattedException : Exception {
 struct OSHookError final : FormattedException<std::runtime_error> {
     using FormattedException::FormattedException;
 };
+
+
+struct ContextInitializationError final : FormattedException<std::runtime_error> {
+    using FormattedException::FormattedException;
+};

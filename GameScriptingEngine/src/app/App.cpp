@@ -13,53 +13,24 @@
 
 namespace {
 auto fix_monitor_dpi_differences = [windowDPI = 0.0f]() mutable {
-    if (windowDPI == 0.0f) {
-        windowDPI = ImGui::GetWindowDpiScale();
-    }
 
-    if (const float current_dpi = ImGui::GetWindowDpiScale(); current_dpi != windowDPI) {
-        spdlog::debug("DPI changed, resizing the window");
-        const ImVec2 size = ImGui::GetWindowSize();
-        ImGui::SetWindowSize(size + ImVec2{1.f, 1.f});
-        ImGui::SetWindowSize(size - ImVec2{1.f, 1.f});
-        windowDPI = ImGui::GetWindowDpiScale();
-    }
 };
 
-const char* WindowName(AppMode const& appMode) {
-    constexpr static const char* const overlay_name{"GameScriptingEngine OVERLAY mode ###MAIN_WINDOW"};
-    constexpr static const char* const interactive_name{"GameScriptingEngine INTERACTIVE mode ###MAIN_WINDOW"};
-
-    return appMode.get() == AppMode::State::INTERACTIVE ? interactive_name : overlay_name;
-}
 } // namespace
 void App::Start() {
     eventListener.listen([](Events::SetWindowVisibility const& event) { visible = event.isVisible; });
-
-
     try {
-        InputListener::Initialize();
-        // TODO: frame limiter? without image processing its ~1000 i dont want to use vsync
-        while (isRunning && !glfwWindowShouldClose(window)) {
-            fpsCounter.measure();
+    InputListener::Initialize();
+    while (isRunning && !window.shouldClose()) {
 
-
-            glfwPollEvents();
-            GlobalEventBus::Process();
-
-            // TODO: convert it to be automatic, save the window rect,
-            // and detect mouse position. If inside - non overlay
-            if (appMode.get() == AppMode::State::OVERLAY) {
-                ImGui::GetMainViewport()->Flags |= ImGuiViewportFlags_NoInputs;
-            }
-            fix_monitor_dpi_differences();
+            Update();
 
             window.startFrame();
+            window.fixScaling();
             Render();
 
             window.endFrame();
-            auto t2 = std::chrono::steady_clock::now();
-        }
+        } 
     } catch (std::exception const& e) {
         InputListener::Release();
         spdlog::critical("{} Error occured: {}", TAG, e.what());
@@ -67,32 +38,30 @@ void App::Start() {
     }
 }
 
+void App::Update() {
+    glfwPollEvents();
+    GlobalEventBus::Process();
+
+    if (AppMode::get() == AppMode::State::OVERLAY) {
+        ImGui::GetMainViewport()->Flags |= ImGuiViewportFlags_NoInputs;
+    }
+
+    fpsCounter.measure();
+}
+
 
 void App::Render() {
     static bool demo = false;
     ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
-
     ImGui::PushStyleVar(ImGuiStyleVar_Alpha, visible ? 1.0f : 0.0f);
-    ImGui::Begin(WindowName(appMode), &isRunning);
-    {
 
-        fpsCounter.widget();
-        fpsCounter.plot();
+    ImGui::Begin(WindowName(), &isRunning);
+    {
+        fpsCounter.render();
 
         RenderComponents();
         TemporaryRender();
 
-        static GLImage image;
-        static cv::Mat mat = AssetManager::Retrieve("6.png");
-        if (static bool ranOnce = false; !ranOnce) {
-            image.resize({static_cast<float>(mat.cols), static_cast<float>(mat.rows)});
-            cv::Mat fmat;
-            cv::flip(mat, fmat, 0);
-            image.setData(fmat);
-            ranOnce = true;
-        }
-        ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), {800, 600}, ImVec2(0, 1),
-                     ImVec2(1, 0));
 
         ImGui::Separator();
         ImGui::Checkbox("Demo", &demo);
@@ -100,6 +69,7 @@ void App::Render() {
             ImGui::ShowDemoWindow();
     }
     ImGui::End();
+
     ImGui::PopStyleVar();
 }
 
@@ -109,26 +79,38 @@ void App::RenderComponents() {
     areaMarker.render();
     ImGui::Separator();
 
-
+    static GLImage          image;
     static ScreenImageSaver saver;
     if (auto area = areaMarker.get(); area.GetArea() > 0) {
         reader.updateRegion(area);
         reader.updateImage();
         reader.updateRender();
-        reader.render();
+        // reader.render();
 
 
-        saver.save(reader.getImage());
+         saver.save(reader.getImage());
+        if (ImGui::Button("your mom")) {
+            image.setData(reader.getImage());
+        }
     }
+    ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), {800, 600}, ImVec2(0, 1),
+                 ImVec2(1, 0));
 
     templateMatcherWidget();
 
+    clicker.render();
 
-    ImGui::Checkbox("AutoClicker", &clicker.isVisible);
-
-    if (clicker.isVisible) {
-        clicker.render();
-    }
+    // static GLImage image;
+    // static cv::Mat mat = AssetManager::Retrieve("6.png");
+    // if (static bool ranOnce = false; !ranOnce) {
+    //     image.resize({static_cast<float>(mat.cols), static_cast<float>(mat.rows)});
+    //     cv::Mat fmat;
+    //     cv::flip(mat, fmat, 0);
+    //     image.setData(fmat);
+    //     ranOnce = true;
+    // }
+    // ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), {800, 600}, ImVec2(0, 1),
+    //              ImVec2(1, 0));
 }
 void App::TemporaryRender() {}
 
@@ -157,4 +139,12 @@ void App::templateMatcherWidget() {
     if (areaMarker.get().GetArea() < 1.0f) {
         draw = false;
     }
+}
+
+
+const char* App::WindowName() {
+    constexpr static const char* const overlay_name{"GameScriptingEngine OVERLAY mode ###MAIN_WINDOW"};
+    constexpr static const char* const interactive_name{"GameScriptingEngine INTERACTIVE mode ###MAIN_WINDOW"};
+
+    return AppMode::get() == AppMode::State::INTERACTIVE ? interactive_name : overlay_name;
 }

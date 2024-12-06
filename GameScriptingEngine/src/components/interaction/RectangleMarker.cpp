@@ -52,7 +52,7 @@ void RectangleMarker::render() {
 done_marking RectangleMarker::markArea() {
     // TODO: the early returns are needed because what if the user holds the mouse button... idk how to make this nicer
     // for now.
-    if (App::GetMode() == AppMode::State::OVERLAY) {
+    if (AppMode::get() == AppMode::State::OVERLAY) {
         GlobalEventBus::Add(Events::ForceMode{.mode =AppMode::State::INTERACTIVE});
         return done_marking{false};
     }

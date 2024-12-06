@@ -1,5 +1,6 @@
+
+
 #include "app/App.hpp"
-#include "app/AssetManager.hpp"
 
 #include <spdlog/spdlog.h>
 

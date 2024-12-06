@@ -1,27 +1,31 @@
 #pragma once
-#include "ImGui/imgui_internal.h"
-#include "app/GLImage.hpp"
+#include "app/backend/GLImage.hpp"
 
+#include <ImGui/imgui_internal.h>
 #include <Windows.h>
 #include <memory>
-#include <opencv2/core/core.hpp>
 
 
-// TODO: idk about this name, iffy
 class MonitorPixelReader {
 private:
-    inline static constexpr char const* const TAG{"[MonitorPixelReader]"};
+    static constexpr char const* const TAG{"[MonitorPixelReader]"};
 
 public:
     MonitorPixelReader() = default;
     explicit MonitorPixelReader(ImRect area);
     ~MonitorPixelReader();
 
+    MonitorPixelReader(MonitorPixelReader const&)           = delete;
+    MonitorPixelReader operator=(MonitorPixelReader const&) = delete;
+    MonitorPixelReader(MonitorPixelReader&&)                = delete;
+    MonitorPixelReader operator=(MonitorPixelReader&&)      = delete;
+
+public:
     void    updateImage();
     void    updateRegion(ImRect new_area);
-    void    updateRender();
+    void    updateRender() const;
     void    render(ImVec2 size = {0, 0}) const;
-    cv::Mat getImage();
+    [[nodiscard]] cv::Mat getImage();
 
 private:
     void resize(ImRect new_area);
