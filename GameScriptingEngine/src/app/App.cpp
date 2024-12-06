@@ -1,71 +1,14 @@
 #include "app/App.hpp"
 
-#include "ImGui/implot.h"
-#include "Random.hpp"
 #include "app/AssetManager.hpp"
 #include "app/events/Events.hpp"
 #include "components/interaction/ScreenImageSaver.hpp"
 #include "components/search/TemplateMatcher.hpp"
-#include "input/Mouse.hpp"
 
 #include <GLFW/glfw3.h>
 #include <ImGui/imgui.h>
 #include <opencv2/imgcodecs.hpp>
 #include <spdlog/spdlog.h>
-
-// utility structure for realtime plot
-struct ScrollingBuffer {
-    int              MaxSize;
-    int              Offset;
-    float            maxValue{0.0f};
-    ImVector<ImVec2> Data;
-    ScrollingBuffer(int max_size = 2000) {
-        MaxSize = max_size;
-        Offset  = 0;
-        Data.reserve(MaxSize);
-    }
-    void AddPoint(float x, float y) {
-        maxValue = std::max(maxValue, y);
-        if (Data.size() < MaxSize)
-            Data.push_back(ImVec2(x, y));
-        else {
-            Data[Offset] = ImVec2(x, y);
-            Offset       = (Offset + 1) % MaxSize;
-        }
-    }
-    void Erase() {
-        if (Data.size() > 0) {
-            Data.shrink(0);
-            Offset = 0;
-        }
-    }
-
-    float maxVal() { return maxValue; }
-};
-
-void Demo_RealtimePlots(float fps) {
-    static ScrollingBuffer sdata2;
-    static float           t = 0;
-
-    t += ImGui::GetIO().DeltaTime;
-
-    sdata2.AddPoint(t, fps);
-
-    static float history = 10.0f;
-
-    static ImPlotAxisFlags flags = ImPlotAxisFlags_NoTickLabels;
-
-    if (ImPlot::BeginPlot("##Scrolling", ImVec2(-1, 150))) {
-        ImPlot::SetupAxes(nullptr, nullptr, flags, flags);
-        ImPlot::SetupAxisLimits(ImAxis_X1, t - history, t, ImGuiCond_Always);
-        ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 120);
-        ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 0.5f);
-
-        ImPlot::PlotLine("FPS", &sdata2.Data[0].x, &sdata2.Data[0].y, sdata2.Data.size(), 0, sdata2.Offset,
-                         2 * sizeof(float));
-        ImPlot::EndPlot();
-    }
-}
 
 
 namespace {
@@ -93,26 +36,34 @@ const char* WindowName(AppMode const& appMode) {
 void App::Start() {
     eventListener.listen([](Events::SetWindowVisibility const& event) { visible = event.isVisible; });
 
-    // TODO: frame limiter? without image processing its ~1000 i dont want to use vsync
-    while (isRunning && !glfwWindowShouldClose(window)) {
-        fpsCounter.measure();
+
+    try {
+        InputListener::Initialize();
+        // TODO: frame limiter? without image processing its ~1000 i dont want to use vsync
+        while (isRunning && !glfwWindowShouldClose(window)) {
+            fpsCounter.measure();
 
 
-        glfwPollEvents();
-        GlobalEventBus::Process();
+            glfwPollEvents();
+            GlobalEventBus::Process();
 
-        // TODO: convert it to be automatic, save the window rect,
-        // and detect mouse position. If inside - non overlay
-        if (appMode.get() == AppMode::State::OVERLAY) {
-            ImGui::GetMainViewport()->Flags |= ImGuiViewportFlags_NoInputs;
+            // TODO: convert it to be automatic, save the window rect,
+            // and detect mouse position. If inside - non overlay
+            if (appMode.get() == AppMode::State::OVERLAY) {
+                ImGui::GetMainViewport()->Flags |= ImGuiViewportFlags_NoInputs;
+            }
+            fix_monitor_dpi_differences();
+
+            window.startFrame();
+            Render();
+
+            window.endFrame();
+            auto t2 = std::chrono::steady_clock::now();
         }
-        fix_monitor_dpi_differences();
-
-        window.startFrame();
-        Render();
-
-        window.endFrame();
-        auto t2 = std::chrono::steady_clock::now();
+    } catch (std::exception const& e) {
+        InputListener::Release();
+        spdlog::critical("{} Error occured: {}", TAG, e.what());
+        throw;
     }
 }
 
@@ -124,9 +75,8 @@ void App::Render() {
     ImGui::PushStyleVar(ImGuiStyleVar_Alpha, visible ? 1.0f : 0.0f);
     ImGui::Begin(WindowName(appMode), &isRunning);
     {
-        auto fps = fpsCounter.fps();
-        ImGui::Text("Current fps %.3f", fps);
-        Demo_RealtimePlots(fps);
+
+        ImGui::Text("Current fps %.3f", fpsCounter.widget());
 
         RenderComponents();
         TemporaryRender();

@@ -13,8 +13,8 @@ private:
 #define WITH_MOUSE_HOOK false
 
 public:
-    InputListener();
-    ~InputListener();
+    static void Initialize();
+    static void Release();
 
     static bool SubscribeKeyPress(std::function<void(int keyCode, int action)> subscriber);
 #if WITH_MOUSE_HOOK

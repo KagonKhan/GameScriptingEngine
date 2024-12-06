@@ -13,13 +13,14 @@ add_executable (GameScriptingEngine
    
     "include/Utils.hpp"
     "include/app/events/Events.hpp"
+    "include/app/Exceptions.hpp"
  
     "src/Random.cpp"
  
     
     "src/app/App.cpp"
     "src/app/components/AppMode.cpp"
-    "src/app/components/SmoothFPSCounter.cpp"
+    "src/app/components/SmoothedFPSCounter.cpp"
  
     "src/app/Window.cpp"
     "src/app/GLImage.cpp"

@@ -4,13 +4,15 @@
 #include <functional>
 #include <spdlog/spdlog.h>
 
+#include "app/Exceptions.hpp"
 
-InputListener::InputListener() {
+
+void InputListener::Initialize() {
     spdlog::debug("{} Constructor", TAG);
-    HINSTANCE hInstance = GetModuleHandle(NULL);
+    HINSTANCE hInstance = nullptr;//GetModuleHandle(nullptr);
     if (!hInstance) {
-        spdlog::critical("Could not get instance handle!");
-        exit(1);
+        spdlog::critical("wtf broski");
+        throw OSHookError("{} Could not get instance handle!", TAG);
     }
     keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInstance, 0);
     if (WITH_MOUSE_HOOK)
@@ -22,7 +24,7 @@ InputListener::InputListener() {
     }
 }
 
-InputListener::~InputListener() {
+void InputListener::Release() {
     spdlog::debug("{} Destructor", TAG);
     UnhookWindowsHookEx(keyboardHook);
     if (WITH_MOUSE_HOOK)

@@ -2,7 +2,7 @@
 #include "Window.hpp"
 #include "components/AppMode.hpp"
 #include "components/MonitorPixelReader.hpp"
-#include "components/SmoothFPSCounter.hpp"
+#include "components/SmoothedFPSCounter.hpp"
 #include "components/interaction/AutoClicker.hpp"
 #include "components/interaction/RectangleMarker.hpp"
 
@@ -35,5 +35,5 @@ private:
     inline static AutoClicker        clicker;
     inline static RectangleMarker    areaMarker;
     inline static MonitorPixelReader reader;
-    inline static SmoothFPSCounter   fpsCounter{10};
+    inline static SmoothedFPSCounter   fpsCounter{10};
 };
