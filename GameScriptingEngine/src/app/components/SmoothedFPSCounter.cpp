@@ -15,10 +15,8 @@ void SmoothedFPSCounter::measure() {
 }
 
 void SmoothedFPSCounter::render() const {
-    ImGui::SameLine(ImGui::GetWindowWidth() - plotSize.x);
     ImGui::Text("Current fps %.3f", averageFPS);
     ImGui::Spacing();
-    ImGui::SameLine(ImGui::GetWindowWidth() - plotSize.x);
     plot();
 }
 

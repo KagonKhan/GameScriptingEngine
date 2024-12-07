@@ -5,7 +5,7 @@ Language: Cpp
 # GENERAL
 IncludeBlocks: Regroup
 SortIncludes: 'true'
-ColumnLimit: '120'
+ColumnLimit: 120
 ContinuationIndentWidth: '4'
 IndentWidth: '4'
 UseTab: Never
@@ -40,8 +40,6 @@ AllowShortIfStatementsOnASingleLine: 'false'
 AllowShortLoopsOnASingleLine: 'false'
 AlwaysBreakBeforeMultilineStrings: 'false'
 
-BinPackArguments: 'true'
-BinPackParameters: 'true'
 
 
 
@@ -56,3 +54,17 @@ IndentWrappedFunctionNames: 'false'
 KeepEmptyLinesAtTheStartOfBlocks: 'false'
 
 ReflowComments: 'true'
+
+
+
+
+
+
+
+
+
+BinPackArguments: true
+BinPackParameters: true
+AllowShortEnumsOnASingleLine: true
+BreakBeforeBraces: Attach
+CompactNamespaces: true

@@ -41,13 +41,13 @@ bool Mouse::IsButtonPressed(const Button button) {
 bool Mouse::Click() {
     spdlog::debug("{} Clicking mouse", TAG);
 
-    UINT uSent = SendInput(2, INPUTS::LMB_CLICK, sizeof(INPUT));
+    const UINT sent = SendInput(2, INPUTS::LMB_CLICK, sizeof(INPUT));
 
-    if (uSent != 2) {
+    if (sent != 2) {
         spdlog::critical("{} Failed to click the mouse!", TAG);
     }
 
-    return uSent != 2;
+    return sent == 2;
 }
 
 bool Mouse::Click(const ImVec2 mouse_position) { return false; }

@@ -4,25 +4,28 @@
 #include "app/events/Events.hpp"
 #include "components/interaction/ScreenImageSaver.hpp"
 #include "components/search/TemplateMatcher.hpp"
+#include "sink.hpp"
 
 #include <GLFW/glfw3.h>
 #include <ImGui/imgui.h>
 #include <opencv2/imgcodecs.hpp>
+#include <spdlog/sinks/base_sink.h>
 #include <spdlog/spdlog.h>
 
 
-namespace {
-auto fix_monitor_dpi_differences = [windowDPI = 0.0f]() mutable {
-
-};
-
-} // namespace
 void App::Start() {
+    (void)Keyboard::AddKeybind(Keyboard::KEY::E, [] { visible = !visible; });
+    (void)Keyboard::AddKeybind(Keyboard::KEY::LEFT_CONTROL, [] {
+        static bool toggler = true;
+
+        GlobalEventBus::Add(Events::ForceMode{.mode = toggler ? AppMode::State::INTERACTIVE : AppMode::State::OVERLAY});
+        toggler = !toggler;
+    });
+
     eventListener.listen([](Events::SetWindowVisibility const& event) { visible = event.isVisible; });
     try {
-    InputListener::Initialize();
-    while (isRunning && !window.shouldClose()) {
-
+        InputListener::Initialize();
+        while (isRunning && !window.shouldClose()) {
             Update();
 
             window.startFrame();
@@ -30,7 +33,7 @@ void App::Start() {
             Render();
 
             window.endFrame();
-        } 
+        }
     } catch (std::exception const& e) {
         InputListener::Release();
         spdlog::critical("{} Error occured: {}", TAG, e.what());
@@ -49,7 +52,8 @@ void App::Update() {
     fpsCounter.measure();
 }
 
-
+// TODO: style and docking is becoming VERY important
+// https://github.com/ocornut/imgui/issues/4430#:~:text=and%20snippet%20I%20call%20right%20after%20setting%20imgui%20frame%3A
 void App::Render() {
     static bool demo = false;
     ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once);
@@ -57,6 +61,15 @@ void App::Render() {
 
     ImGui::Begin(WindowName(), &isRunning);
     {
+
+            const auto& messages = ImGuiLogSink::instance->messages();
+            ImGui::BeginChild("LogRegion", ImVec2(0, 150), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+            for (const auto& message : messages) {
+                ImGui::TextUnformatted(message.c_str());
+            }
+            ImGui::EndChild();
+        
+
         fpsCounter.render();
 
         RenderComponents();
@@ -67,6 +80,7 @@ void App::Render() {
         ImGui::Checkbox("Demo", &demo);
         if (demo)
             ImGui::ShowDemoWindow();
+
     }
     ImGui::End();
 
@@ -88,13 +102,14 @@ void App::RenderComponents() {
         // reader.render();
 
 
-         saver.save(reader.getImage());
+        saver.save(reader.getImage());
         if (ImGui::Button("your mom")) {
             image.setData(reader.getImage());
         }
+
+        ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), {800, 600}, ImVec2(0, 1),
+                     ImVec2(1, 0));
     }
-    ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<intptr_t>(image.getID())), {800, 600}, ImVec2(0, 1),
-                 ImVec2(1, 0));
 
     templateMatcherWidget();
 

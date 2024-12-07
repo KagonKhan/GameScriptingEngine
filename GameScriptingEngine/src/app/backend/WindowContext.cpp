@@ -80,6 +80,7 @@ void WindowContext::setupImGui() const {
     ImGuiIO& io = ImGui::GetIO();
     (void) io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     ImGui::StyleColorsDark();
 

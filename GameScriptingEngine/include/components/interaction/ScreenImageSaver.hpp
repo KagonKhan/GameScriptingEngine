@@ -17,6 +17,11 @@ public:
     void save(cv::Mat const& image) {
         static bool windowWasHidden = false;
         // TODO: how to eliminate the app from showing up on the SS?
+        // Simply timed disappearance?
+        // Callback? Keybind for saving?
+        // Keybind for app disappearance?
+        // Extract the saving logic, so i dont have to create cv mat each frame.
+        // i.e. button outside this class, and cache the saving.
         if (ImGui::Button("Save image") || windowWasHidden) {
             if (!windowWasHidden) {
                 GlobalEventBus::Add(Events::SetWindowVisibility{.isVisible = false});
