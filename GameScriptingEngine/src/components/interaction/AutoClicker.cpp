@@ -11,11 +11,31 @@
 #include <string>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 AutoClicker::AutoClicker() {
     Keyboard::AddKeybind(keybind, [this] { isRunning ? stopClicking() : startClicking(); });
 }
 
 AutoClicker::~AutoClicker() { stopClicking(); }
+
+
+
+
+
 
 void AutoClicker::render() {
     // TODO: make this prettier without so much stupid code - YouTube tutorials on DearImGui style or something

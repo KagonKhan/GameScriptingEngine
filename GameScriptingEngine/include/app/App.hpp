@@ -14,7 +14,9 @@ private:
     static constexpr char const* const TAG{"[App]"};
 
 public:
-    static void Start();
+    static void        Start();
+    inline static bool isRunning{true};
+    inline static bool inProgress{false};
 
 private:
     static void Update();
@@ -26,7 +28,6 @@ private:
     static const char* WindowName();
 
 private:
-    inline static bool          isRunning{true};
     inline static bool          visible{true};
     inline static AppMode       appMode;
     inline static ImRect        appArea;
@@ -38,4 +39,6 @@ private:
     inline static RectangleMarker    areaMarker;
     inline static MonitorPixelReader reader;
     inline static SmoothedFPSCounter fpsCounter;
+
+    inline static std::jthread macro;
 };

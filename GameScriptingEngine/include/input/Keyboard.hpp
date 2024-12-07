@@ -43,6 +43,7 @@ public:
 
 
         // Numpad
+        NUMLOCK          = 0x90,
         NUMPAD_0         = 0x60,
         NUMPAD_1         = 0x61,
         NUMPAD_2         = 0x62,
@@ -86,7 +87,7 @@ public:
         BACKSPACE = 0x08,
         TAB       = 0x09,
         ENTER     = 0x0D,
-
+        ESCAPE    = 0x1B,
 
     };
 
@@ -96,11 +97,13 @@ public:
     [[nodiscard]] static bool        send(KEY key);
 
 private:
-    static void KeyPressedCallback(const int key_code, const int action);
+    static void KeyPressedCallback(int key_code, int action);
+
 
 private:
     inline static std::unordered_map<KEY, std::function<void()>> keybinds{magic_enum::enum_count<KEY>()};
 
+
     // TODO: how to avoid this
-    inline static bool subscribed = [] { return InputListener::SubscribeKeyPress(KeyPressedCallback); }();
+    inline static bool initialized = [] { return InputListener::SubscribeKeyPress(KeyPressedCallback); }();
 };

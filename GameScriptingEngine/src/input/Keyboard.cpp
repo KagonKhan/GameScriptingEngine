@@ -34,6 +34,7 @@ INPUT* MakeKeyEvent(Keyboard::KEY key) {
 
 namespace {
 inline const std::unordered_map<Keyboard::KEY, std::string> SPECIAL_VK_TO_NAME{
+    // Function keys
     {Keyboard::KEY::F1, "F1"},
     {Keyboard::KEY::F2, "F2"},
     {Keyboard::KEY::F3, "F3"},
@@ -43,7 +44,12 @@ inline const std::unordered_map<Keyboard::KEY, std::string> SPECIAL_VK_TO_NAME{
     {Keyboard::KEY::F7, "F7"},
     {Keyboard::KEY::F8, "F8"},
     {Keyboard::KEY::F9, "F9"},
+    {Keyboard::KEY::F10, "F10"},
+    {Keyboard::KEY::F11, "F11"},
+    {Keyboard::KEY::F12, "F12"},
 
+    // Numpad keys
+    {Keyboard::KEY::NUMLOCK, "Numlock"},
     {Keyboard::KEY::NUMPAD_0, "Numpad 0"},
     {Keyboard::KEY::NUMPAD_1, "Numpad 1"},
     {Keyboard::KEY::NUMPAD_2, "Numpad 2"},
@@ -54,7 +60,6 @@ inline const std::unordered_map<Keyboard::KEY, std::string> SPECIAL_VK_TO_NAME{
     {Keyboard::KEY::NUMPAD_7, "Numpad 7"},
     {Keyboard::KEY::NUMPAD_8, "Numpad 8"},
     {Keyboard::KEY::NUMPAD_9, "Numpad 9"},
-
     {Keyboard::KEY::NUMPAD_MULTIPLY, "Numpad Multiply"},
     {Keyboard::KEY::NUMPAD_ADD, "Numpad Add"},
     {Keyboard::KEY::NUMPAD_SEPARATOR, "Numpad Separator"},
@@ -62,7 +67,7 @@ inline const std::unordered_map<Keyboard::KEY, std::string> SPECIAL_VK_TO_NAME{
     {Keyboard::KEY::NUMPAD_DELETE, "Numpad Delete"},
     {Keyboard::KEY::NUMPAD_DIVIDE, "Numpad Divide"},
 
-
+    // Special keys
     {Keyboard::KEY::LEFT_CONTROL, "Left Control"},
     {Keyboard::KEY::RIGHT_CONTROL, "Right Control"},
     {Keyboard::KEY::LEFT_ALT, "Left Alt"},
@@ -70,10 +75,10 @@ inline const std::unordered_map<Keyboard::KEY, std::string> SPECIAL_VK_TO_NAME{
     {Keyboard::KEY::LEFT_SHIFT, "Left Shift"},
     {Keyboard::KEY::RIGHT_SHIT, "Right Shift"},
 
-
     {Keyboard::KEY::BACKSPACE, "Backspace"},
     {Keyboard::KEY::TAB, "Tab"},
     {Keyboard::KEY::ENTER, "Enter"},
+    {Keyboard::KEY::ESCAPE, "Escape"},
 
 };
 
@@ -123,9 +128,9 @@ void Keyboard::KeyPressedCallback(const int key_code, const int action) {
     const std::string button_name    = Keyboard::KeyName(pressed_button);
 
     if (keybinds.contains(pressed_button) && action == WM_KEYUP) {
-        spdlog::debug("Callback for button {} called", button_name);
+        //spdlog::debug("Callback for button {} called", button_name);
         std::invoke(keybinds[pressed_button]);
     } else if (action == WM_KEYUP) {
-        spdlog::info("{} Received key: {}, without keybinds", TAG, button_name);
+        //spdlog::info("{} Received key: {}, without keybinds", TAG, button_name);
     }
 }

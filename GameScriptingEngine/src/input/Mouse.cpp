@@ -1,28 +1,14 @@
 #include "input/Mouse.hpp"
 
+#include "input/SendInputs.hpp"
+
 #include <Windows.h>
 #include <magic_enum/magic_enum.hpp>
 #include <spdlog/spdlog.h>
 
 namespace {
-namespace EVENTS {
-const MOUSEINPUT LMB_DOWN{.dwFlags = MOUSEEVENTF_LEFTDOWN};
-const MOUSEINPUT LMB_UP{.dwFlags = MOUSEEVENTF_LEFTUP};
 
-const MOUSEINPUT RMB_DOWN{.dwFlags = MOUSEEVENTF_RIGHTDOWN};
-const MOUSEINPUT RMB_UP{.dwFlags = MOUSEEVENTF_RIGHTUP};
-} // namespace EVENTS
 
-namespace INPUTS {
-const INPUT LMB_PRESS    = {.type = INPUT_MOUSE, .mi = EVENTS::LMB_DOWN};
-const INPUT LMB_RELEASE  = {.type = INPUT_MOUSE, .mi = EVENTS::LMB_UP};
-INPUT       LMB_CLICK[2] = {LMB_PRESS, LMB_RELEASE};
-
-// will it break do to re-use of the structures?
-const INPUT RMB_PRESS    = {.type = INPUT_MOUSE, .mi = EVENTS::RMB_DOWN};
-const INPUT RMB_RELEASE  = {.type = INPUT_MOUSE, .mi = EVENTS::RMB_UP};
-INPUT       RMB_CLICK[2] = {RMB_PRESS, RMB_RELEASE};
-} // namespace INPUTS
 } // namespace
 
 ImVec2 Mouse::GetPosition() {
@@ -31,7 +17,15 @@ ImVec2 Mouse::GetPosition() {
     return {static_cast<float>(point.x), static_cast<float>(point.y)};
 }
 
+bool Mouse::SetPosition(ImVec2 position) { return SetCursorPos(position.x, position.y); }
+
 bool Mouse::IsButtonPressed(const Button button) {
+    static std::unordered_map<Mouse::Button, bool> WAS_BUTTON_PRESSED{
+        {Button::LEFT, false},
+        {Button::RIGHT, false},
+        {Button::MIDDLE, false},
+    };
+
     const bool is_on  = GetAsyncKeyState(magic_enum::enum_integer(button)) & 0x8000;
     const bool was_on = std::exchange(WAS_BUTTON_PRESSED[button], is_on);
 
@@ -41,7 +35,7 @@ bool Mouse::IsButtonPressed(const Button button) {
 bool Mouse::Click() {
     spdlog::debug("{} Clicking mouse", TAG);
 
-    const UINT sent = SendInput(2, INPUTS::LMB_CLICK, sizeof(INPUT));
+    const UINT sent = SendInput(2, INPUTS::LMB_CLICK().data, sizeof(INPUT));
 
     if (sent != 2) {
         spdlog::critical("{} Failed to click the mouse!", TAG);
@@ -50,6 +44,27 @@ bool Mouse::Click() {
     return sent == 2;
 }
 
-bool Mouse::Click(const ImVec2 mouse_position) { return false; }
+bool Mouse::Click(const ImVec2 mouse_position) {
+    auto current_mouse_position = GetPosition();
+    bool success{true};
+    success &= SetPosition(mouse_position);
+    success &= Click();
+    //success &= SetPosition(current_mouse_position);
+
+    return success;
+}
+
+bool Mouse::Scroll(ScrollDirection direction) {
+    spdlog::debug("{} Scrolling mouse", TAG);
+
+    INPUT      input = (direction == ScrollDirection::DOWN) ? INPUTS::SCROLL_DOWN().data : INPUTS::SCROLL_UP().data;
+    const UINT sent  = SendInput(1, &input, sizeof(INPUT));
+
+    if (sent != 1) {
+        spdlog::critical("{} Failed to scroll the mouse!", TAG);
+    }
+
+    return sent == 1;
+}
 
 void Mouse::MouseMoveCallback(ImVec2 position) { spdlog::critical("Mouse position ({}, {})", position.x, position.y); }

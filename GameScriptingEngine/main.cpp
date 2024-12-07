@@ -27,27 +27,3 @@ int main() {
 // TODO: scratch-language like widget for scripting? is that even possible? plugins?
 // TODO: remove windows console, and log to imgui window
 
-
-void idleonNightly() {
-    /* Send M
-     * Scroll to world 5
-     * Teleport to boss, kill it 300 times
-     * Teleport to wurms,
-     * Auto
-     * Bubbles.
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     */
-}
